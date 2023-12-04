@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.js": "/tmdb/static/js/main.1f44a9f5.js",
+    "static/js/364.65a4a57a.chunk.js": "/tmdb/static/js/364.65a4a57a.chunk.js",
+    "static/js/741.fa50dba3.chunk.js": "/tmdb/static/js/741.fa50dba3.chunk.js",
+    "static/media/pexels-laura-tancredi-7078717.jpg": "/tmdb/static/media/pexels-laura-tancredi-7078717.1498457edb9a21999856.jpg",
+    "static/media/pexels-eberhard-grossgasteiger-1366919.jpg": "/tmdb/static/media/pexels-eberhard-grossgasteiger-1366919.1b0742abe3e5a29b7451.jpg",
+    "static/media/pexels-dziana-hasanbekava-5480827.jpg": "/tmdb/static/media/pexels-dziana-hasanbekava-5480827.6123c500508cea5447e7.jpg",
+    "static/media/film-poster-placeholder.png": "/tmdb/static/media/film-poster-placeholder.9a8182eb4c8ae70fe602.png",
+    "index.html": "/tmdb/index.html",
+    "main.1f44a9f5.js.map": "/tmdb/static/js/main.1f44a9f5.js.map",
+    "364.65a4a57a.chunk.js.map": "/tmdb/static/js/364.65a4a57a.chunk.js.map",
+    "741.fa50dba3.chunk.js.map": "/tmdb/static/js/741.fa50dba3.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.1f44a9f5.js"
+  ]
+}
