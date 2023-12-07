@@ -135,7 +135,7 @@ const ThirdPartyAuthByGitHub = () => {
 };
 const ThirdPartyAuthSignIn = () => {
     return (
-        <Grid container spacing={4.5} justifyContent="center">
+        <Grid container spacing={2.9} justifyContent="center">
             <Grid item xs={12} sm={12} md={12} lg={12} xl={6}>
                 <ThirdPartyAuthByGoogle/>
             </Grid>

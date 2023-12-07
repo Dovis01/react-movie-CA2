@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {login, signup} from "../api/user-api";
+import {loginByEmail, loginByUsername, signup} from "../api/user-api";
 
 export const UsersContext = React.createContext(null);
 
@@ -23,11 +23,30 @@ const UsersContextProvider = (props) => {
     const removeUser = () => {
         setUser(null);
     };
-    const authenticate = async (user) => {
-        const result = await login(user);
+    const authenticateByUsername = async (user) => {
+        const result = await loginByUsername(user);
+        let userEntity = {
+            ...user,
+        }
         if (result.token) {
+            userEntity.email = result.email;
             setToken(result.token);
-            addUser(user);
+            addUser(userEntity);
+            setIsAuthenticated(true);
+        } else {
+            throw new Error(result.msg);
+        }
+    };
+
+    const authenticateByEmail = async (user) => {
+        const result = await loginByEmail(user);
+        let userEntity = {
+            ...user,
+        }
+        if (result.token) {
+            userEntity.username = result.username;
+            setToken(result.token);
+            addUser(userEntity);
             setIsAuthenticated(true);
         } else {
             throw new Error(result.msg);
@@ -52,7 +71,8 @@ const UsersContextProvider = (props) => {
                 isAuthenticated,
                 addUser,
                 removeUser,
-                authenticate,
+                authenticateByUsername,
+                authenticateByEmail,
                 register,
                 signout,
             }}
