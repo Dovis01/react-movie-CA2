@@ -9,14 +9,16 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import {useNavigate} from "react-router-dom";
 import {useContext} from "react";
-import {MoviesContext} from "../../contexts/moviesContext";
+import {UsersContext} from "../../contexts/usersContext";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
 
 
 const ThirdPartyAuthByGoogle = () => {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const navigate = useNavigate();
-    const context = useContext(MoviesContext);
-    const user =context.user;
+    const usersContext = useContext(UsersContext);
+    const user = usersContext.user;
     const googleProvider = new GoogleAuthProvider();
     const signInWithGoogle = async () => {
         try {
@@ -24,7 +26,7 @@ const ThirdPartyAuthByGoogle = () => {
             // Google 登录成功后，可以获取用户信息
             const user = result.user;
             // 处理登录成功逻辑，例如设置用户状态或导航到其他页面
-            context.addUser(user);
+            usersContext.addUser(user);
             setOpenSnackbar(true);
         } catch (error) {
             // 处理错误
@@ -40,7 +42,7 @@ const ThirdPartyAuthByGoogle = () => {
     return (
         <>
             <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{vertical: "top", horizontal: "right"}}
                 open={openSnackbar}
                 autoHideDuration={6000} // 6 seconds before auto close
                 sx={{marginTop: '76px'}}
@@ -56,10 +58,12 @@ const ThirdPartyAuthByGoogle = () => {
                     </Typography>
                 </MuiAlert>
             </Snackbar>
-            <Button variant="contained" onClick={signInWithGoogle} sx={{ width: '246px' }}>
-                <GoogleIcon sx={{mr: 1}}/>
-                Sign in with Google
-            </Button>
+            <Paper sx={{width: "100%"}}>
+                <Button variant="contained" onClick={signInWithGoogle} sx={{width: '100%'}}>
+                    <GoogleIcon sx={{mr: 1}}/>
+                    Sign in with Google
+                </Button>
+            </Paper>
         </>
     );
 };
@@ -67,7 +71,7 @@ const ThirdPartyAuthByGoogle = () => {
 const ThirdPartyAuthByGitHub = () => {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const navigate = useNavigate();
-    const context = useContext(MoviesContext);
+    const usersContext = useContext(UsersContext);
     const [snackMessage, setSnackMessage] = useState('');
     const [severity, setSeverity] = useState('success');
     const githubProvider = new GithubAuthProvider();
@@ -79,7 +83,7 @@ const ThirdPartyAuthByGitHub = () => {
             //const token = credential.accessToken;
             const user = result.user;
             // 处理登录成功逻辑，例如设置用户状态或导航到其他页面
-            context.addUser(user);
+            usersContext.addUser(user);
             setSnackMessage(`Welcome ${user.displayName}, your email is ${user.email}`);
             setSeverity('success');
             setOpenSnackbar(true);
@@ -104,7 +108,7 @@ const ThirdPartyAuthByGitHub = () => {
     return (
         <>
             <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{vertical: "top", horizontal: "right"}}
                 open={openSnackbar}
                 autoHideDuration={6000} // 6 seconds before auto close
                 sx={{marginTop: '76px'}}
@@ -120,27 +124,25 @@ const ThirdPartyAuthByGitHub = () => {
                     </Typography>
                 </MuiAlert>
             </Snackbar>
-            <Button variant="contained" onClick={signInWithGitHub} sx={{ width: '246px' }}>
-                <GitHubIcon sx={{mr: 1}}/>
-                Sign in with GitHub
-            </Button>
+            <Paper sx={{width: "100%"}}>
+                <Button variant="contained" onClick={signInWithGitHub} sx={{width: '100%'}}>
+                    <GitHubIcon sx={{mr: 1}}/>
+                    Sign in with GitHub
+                </Button>
+            </Paper>
         </>
     );
 };
 const ThirdPartyAuthSignIn = () => {
-
-
     return (
-        <>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div style={{ flex: 1 }}>
-                    <ThirdPartyAuthByGoogle />
-                </div>
-                <div style={{ flex: 1 ,marginLeft:35}}>
-                    <ThirdPartyAuthByGitHub />
-                </div>
-            </div>
-        </>
+        <Grid container spacing={4.5} justifyContent="center">
+            <Grid item xs={12} sm={12} md={12} lg={12} xl={6}>
+                <ThirdPartyAuthByGoogle/>
+            </Grid>
+            <Grid item xs={12} sm={12} md={12} lg={12} xl={6}>
+                <ThirdPartyAuthByGitHub/>
+            </Grid>
+        </Grid>
     );
 }
 export default ThirdPartyAuthSignIn;

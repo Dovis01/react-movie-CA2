@@ -12,9 +12,8 @@ import {styled, ThemeProvider, useTheme} from '@mui/material/styles';
 import useMediaQuery from "@mui/material/useMediaQuery";
 import colorTheme from "../../theme/adjustColor";
 import {MoviesContext} from "../../contexts/moviesContext";
+import {UsersContext} from "../../contexts/usersContext";
 import Avatar from "@mui/material/Avatar";
-import {onAuthStateChanged} from 'firebase/auth';
-import {auth} from '../../firebase.js';
 
 const Offset = styled('div')(({theme}) => theme.mixins.toolbar);
 
@@ -31,15 +30,13 @@ const SiteHeader = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const navigate = useNavigate();
-    const context = useContext(MoviesContext);
-    const user = context.user;
+    const moviesContext = useContext(MoviesContext);
+    const usersContext = useContext(UsersContext);
+    const user = usersContext.user;
 
     useEffect(() => {
-        return onAuthStateChanged(auth, (user) => {
-            context.addUser(user);
-            setIsUserLoggedIn(!!user);
-        });
-    }, []);
+        setIsUserLoggedIn(usersContext.isAuthenticated);
+    }, [usersContext.isAuthenticated]);
 
 
     const menuOptions = [
@@ -95,22 +92,15 @@ const SiteHeader = () => {
         setMobileSubAnchorEl(null);
     };
 
-    const handleUserLogOut = async () => {
-        try {
-            await auth.signOut();
-            setUserAnchorEl(null);
-            context.clearPersonalData();
-            navigate("/");
-        } catch (error) {
-            console.log(error);
-        }
+    const handleUserLogOut = () => {
+        usersContext.signout();
+        setUserAnchorEl(null);
+        moviesContext.clearPersonalData();
+        navigate("/");
     };
 
     const userAuthButton = () => {
         if (isUserLoggedIn) {
-            if (user.displayName === null) {
-                user.displayName = user.email;
-            }
             return (
                 <>
                     <Avatar
@@ -122,7 +112,7 @@ const SiteHeader = () => {
                         }}
                         onMouseEnter={(event) => handleUserMenu(event)}
                     >
-                        {user.displayName.substring(0, 1) || user.email.substring(0, 1)}
+                        {user.username.substring(0, 1) || user.email.substring(0, 1)}
                     </Avatar>
                     <Menu
                         id="menu-appuserbar"
@@ -165,7 +155,7 @@ const SiteHeader = () => {
                                     >
                                         {personalSubMenuOptions.map((subOpt) => (
                                             <MenuItem
-                                                key={subOpt.label}
+                                                key={subOpt.label+"mobile"}
                                                 onClick={() => {
                                                     handleMenuSelect(subOpt.path);
                                                     handleUserSubMenuClose();
@@ -272,7 +262,7 @@ const SiteHeader = () => {
                                         if (opt.label === "Movies") {
                                             return (
                                                 <div
-                                                    key={opt.label}
+                                                    key={opt.label+"mobile"}
                                                 >
                                                     <Button
                                                         color="inherit"
@@ -299,7 +289,7 @@ const SiteHeader = () => {
                                                         >
                                                             {movieSubMenuOptions.map((subOpt) => (
                                                                 <MenuItem
-                                                                    key={subOpt.label}
+                                                                    key={subOpt.label+"subMoviesMobile"}
                                                                     onClick={() => {
                                                                         handleMenuSelect(subOpt.path);
                                                                         handleSubMenuClose();
@@ -315,7 +305,7 @@ const SiteHeader = () => {
                                         } else if (opt.label === "People") {
                                             return (
                                                 <div
-                                                    key={opt.label}
+                                                    key={opt.label+"mobile"}
                                                 >
                                                     <Button
                                                         color="inherit"
@@ -342,7 +332,7 @@ const SiteHeader = () => {
                                                         >
                                                             {peopleSubMenuOptions.map((subOpt) => (
                                                                 <MenuItem
-                                                                    key={subOpt.label}
+                                                                    key={subOpt.label+"subPeopleMobile"}
                                                                     onClick={() => {
                                                                         handleMenuSelect(subOpt.path);
                                                                         handleSubMenuClose();
@@ -358,7 +348,7 @@ const SiteHeader = () => {
                                         } else {
                                             return (
                                                 <Button
-                                                    key={opt.label}
+                                                    key={opt.label+"mobile"}
                                                     color="inherit"
                                                     onClick={() => {
                                                         handleMenuSelect(opt.path);
@@ -409,7 +399,7 @@ const SiteHeader = () => {
                                                     >
                                                         {movieSubMenuOptions.map((subOpt) => (
                                                             <MenuItem
-                                                                key={subOpt.label}
+                                                                key={subOpt.label+"subMovies"}
                                                                 onClick={() => {
                                                                     handleMenuSelect(subOpt.path);
                                                                     handleSubMenuClose();
@@ -455,7 +445,7 @@ const SiteHeader = () => {
                                                     >
                                                         {peopleSubMenuOptions.map((subOpt) => (
                                                             <MenuItem
-                                                                key={subOpt.label}
+                                                                key={subOpt.label+"subPeople"}
                                                                 onClick={() => {
                                                                     handleMenuSelect(subOpt.path);
                                                                     handleSubMenuClose();
