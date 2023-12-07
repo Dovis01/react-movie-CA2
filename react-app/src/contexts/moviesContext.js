@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import {onAuthStateChanged} from 'firebase/auth';
-import {auth} from '../firebase.js';
+import React, {useContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {UsersContext} from "./usersContext";
+
 export const MoviesContext = React.createContext(null);
 
 const MoviesContextProvider = (props) => {
     const [favorites, setFavorites] = useState( [] )
     const [myReviews, setMyReviews] = useState( {} )
     const [toWatchList, setToWatchList] = useState( [] )
+    const usersContext = useContext(UsersContext);
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
 
     const clearPersonalData = () => {
         setFavorites([]);
@@ -17,7 +17,7 @@ const MoviesContextProvider = (props) => {
         setToWatchList([]);
     }
     const addToFavorites = (movie) => {
-        if(user){
+        if(usersContext.user){
             let newFavorites = [];
             if (!favorites.includes(movie.id)){
                 newFavorites = [...favorites, movie.id];
@@ -33,7 +33,7 @@ const MoviesContextProvider = (props) => {
     };
 
     const addToWatchList = (movie) => {
-        if(user){
+        if(usersContext.user){
             let newWatchList = [];
             if (!toWatchList.includes(movie.id)){
                 newWatchList = [...toWatchList, movie.id];
@@ -64,22 +64,13 @@ const MoviesContextProvider = (props) => {
     const addReview = (movie, review) => {
         setMyReviews( {...myReviews, [movie.id]: review } )
     };
-    //console.log(myReviews);
-    const addUser = (user) => {
-        setUser(user);
-    };
-    const removeUser = () => {
-        setUser(null);
-    };
+
 
     return (
         <MoviesContext.Provider
             value={{
                 favorites,
                 toWatchList,
-                user,
-                addUser,
-                removeUser,
                 addToFavorites,
                 removeFromFavorites,
                 removeFromWatchList,

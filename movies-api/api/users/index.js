@@ -45,7 +45,7 @@ router.put('/:id', async (req, res) => {
 async function registerUser(req, res) {
     // Add input validation logic here
     await User.create(req.body);
-    res.status(201).json({ success: true, msg: 'User successfully created.' });
+    res.status(201).json({ success: true, msg: 'User successfully created.' ,code:201});
 }
 
 async function authenticateUser(req, res) {
