@@ -5,7 +5,11 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import MenuIcon from "@mui/icons-material/Menu";
+import BadgeIcon from '@mui/icons-material/Badge';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import MenuItem from "@mui/material/MenuItem";
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import Menu from "@mui/material/Menu";
 import {useNavigate} from "react-router-dom";
 import {styled, ThemeProvider, useTheme} from '@mui/material/styles';
@@ -14,6 +18,8 @@ import colorTheme from "../../theme/adjustColor";
 import {MoviesContext} from "../../contexts/moviesContext";
 import {UsersContext} from "../../contexts/usersContext";
 import Avatar from "@mui/material/Avatar";
+import {Divider, ListItemIcon, Tooltip} from "@mui/material";
+import {Logout, Settings} from "@mui/icons-material";
 
 const Offset = styled('div')(({theme}) => theme.mixins.toolbar);
 
@@ -38,7 +44,6 @@ const SiteHeader = () => {
         setIsUserLoggedIn(usersContext.isAuthenticated);
     }, [usersContext.isAuthenticated]);
 
-
     const menuOptions = [
         {label: "Home", path: "/"},
         {label: "Movies"},
@@ -57,6 +62,11 @@ const SiteHeader = () => {
         {label: "Favorites", path: "/movies/favorites"},
         {label: "ToWatchList", path: "/movies/watchlist"},
     ];
+
+    const personalIconMapping = {
+        "Favorites": <FavoriteIcon/>,
+        "ToWatchList": <SubscriptionsIcon/>,
+    };
 
     const handleMenuSelect = (pageURL) => {
         navigate(pageURL);
@@ -103,17 +113,25 @@ const SiteHeader = () => {
         if (isUserLoggedIn) {
             return (
                 <>
-                    <Avatar
-                        sx={{
-                            bgcolor: colorTheme.palette.secondary.main,
-                            width: 32,
-                            height: 32,
-                            fontSize: '1.1rem',
-                        }}
-                        onMouseEnter={(event) => handleUserMenu(event)}
-                    >
-                        {user.username.substring(0, 1) || user.email.substring(0, 1)}
-                    </Avatar>
+                    <Tooltip title="Account settings" arrow PopperProps={{
+                        sx: {
+                            '& .MuiTooltip-tooltip': {
+                                fontSize: '0.92em',
+                            }
+                        }
+                    }}>
+                        <Avatar
+                            sx={{
+                                bgcolor: colorTheme.palette.secondary.main,
+                                width: 32,
+                                height: 32,
+                                fontSize: '1.1rem',
+                            }}
+                            onClick={(event) => handleUserMenu(event)}
+                        >
+                            {user.username.substring(0, 1) || user.email.substring(0, 1)}
+                        </Avatar>
+                    </Tooltip>
                     <Menu
                         id="menu-appuserbar"
                         anchorEl={userAnchorEl}
@@ -126,16 +144,64 @@ const SiteHeader = () => {
                             horizontal: 'left',
                         }}
                         PaperProps={{
-                            style: {
-                                marginTop: '8px',
+                            elevation: 4,
+                            sx: {
+                                ...(isMobile
+                                    ? {}
+                                    : {
+                                        width: '8.5%',
+                                        maxWidth: 'none',
+                                    }),
+                                overflow: 'visible',
+                                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                                mt: 1.5,
+                                '& .MuiAvatar-root': {
+                                    width: 32,
+                                    height: 32,
+                                    ml: -0.5,
+                                    mr: 1,
+                                },
+                                '&:before': {
+                                    content: '""',
+                                    display: 'block',
+                                    position: 'absolute',
+                                    top: 0,
+                                    ...(isMobile
+                                        ? {
+                                            right: 16,
+                                        }
+                                        : {
+                                            right: 45,
+                                        }),
+                                    width: 10,
+                                    height: 10,
+                                    bgcolor: 'background.paper',
+                                    transform: 'translateY(-50%) rotate(45deg)',
+                                    zIndex: 0,
+                                },
                             },
                         }}
                         open={userOpen}
                         onClose={handleUserMenuClose}
                     >
+                        <MenuItem>
+                            <Avatar/> My Profile
+                        </MenuItem>
+                        <MenuItem>
+                            <ListItemIcon>
+                                <BadgeIcon fontSize="medium"/>
+                            </ListItemIcon>
+                            {user.username}
+                        </MenuItem>
+                        <Divider/>
                         {isMobile ? (
                             <>
-                                <MenuItem onClick={(event) => handleMobileMenu('Personal', event)}>Personal</MenuItem>
+                                <MenuItem onClick={(event) => handleMobileMenu('Personal', event)}>
+                                    <ListItemIcon>
+                                        <FormatListBulletedIcon fontSize="small"/>
+                                    </ListItemIcon>
+                                    Personal
+                                </MenuItem>
                                 {activeSubMenu === 'Personal' && (
                                     <Menu
                                         id="menu-appbar"
@@ -155,12 +221,15 @@ const SiteHeader = () => {
                                     >
                                         {personalSubMenuOptions.map((subOpt) => (
                                             <MenuItem
-                                                key={subOpt.label+"mobile"}
+                                                key={subOpt.label + "mobile"}
                                                 onClick={() => {
                                                     handleMenuSelect(subOpt.path);
                                                     handleUserSubMenuClose();
                                                 }}
                                             >
+                                                <ListItemIcon>
+                                                    {personalIconMapping[subOpt.label]}
+                                                </ListItemIcon>
                                                 {subOpt.label}
                                             </MenuItem>
                                         ))}
@@ -169,7 +238,12 @@ const SiteHeader = () => {
                             </>
                         ) : (
                             <>
-                                <MenuItem onClick={(event) => handleMenu('Personal', event)}>Personal</MenuItem>
+                                <MenuItem onClick={(event) => handleMenu('Personal', event)}>
+                                    <ListItemIcon>
+                                        <FormatListBulletedIcon fontSize="small"/>
+                                    </ListItemIcon>
+                                    Personal
+                                </MenuItem>
                                 {activeSubMenu === 'Personal' && (
                                     <Menu
                                         id="menu-appbar"
@@ -195,6 +269,9 @@ const SiteHeader = () => {
                                                     handleUserSubMenuClose();
                                                 }}
                                             >
+                                                <ListItemIcon>
+                                                    {personalIconMapping[subOpt.label]}
+                                                </ListItemIcon>
                                                 {subOpt.label}
                                             </MenuItem>
                                         ))}
@@ -202,7 +279,18 @@ const SiteHeader = () => {
                                 )}
                             </>
                         )}
-                        <MenuItem onClick={handleUserLogOut}>Log out</MenuItem>
+                        <MenuItem>
+                            <ListItemIcon>
+                                <Settings fontSize="small"/>
+                            </ListItemIcon>
+                            Settings
+                        </MenuItem>
+                        <MenuItem onClick={handleUserLogOut}>
+                            <ListItemIcon>
+                                <Logout fontSize="small"/>
+                            </ListItemIcon>
+                            Logout
+                        </MenuItem>
                     </Menu>
                 </>
             );
@@ -262,7 +350,7 @@ const SiteHeader = () => {
                                         if (opt.label === "Movies") {
                                             return (
                                                 <div
-                                                    key={opt.label+"mobile"}
+                                                    key={opt.label + "mobile"}
                                                 >
                                                     <Button
                                                         color="inherit"
@@ -289,7 +377,7 @@ const SiteHeader = () => {
                                                         >
                                                             {movieSubMenuOptions.map((subOpt) => (
                                                                 <MenuItem
-                                                                    key={subOpt.label+"subMoviesMobile"}
+                                                                    key={subOpt.label + "subMoviesMobile"}
                                                                     onClick={() => {
                                                                         handleMenuSelect(subOpt.path);
                                                                         handleSubMenuClose();
@@ -305,7 +393,7 @@ const SiteHeader = () => {
                                         } else if (opt.label === "People") {
                                             return (
                                                 <div
-                                                    key={opt.label+"mobile"}
+                                                    key={opt.label + "mobile"}
                                                 >
                                                     <Button
                                                         color="inherit"
@@ -332,7 +420,7 @@ const SiteHeader = () => {
                                                         >
                                                             {peopleSubMenuOptions.map((subOpt) => (
                                                                 <MenuItem
-                                                                    key={subOpt.label+"subPeopleMobile"}
+                                                                    key={subOpt.label + "subPeopleMobile"}
                                                                     onClick={() => {
                                                                         handleMenuSelect(subOpt.path);
                                                                         handleSubMenuClose();
@@ -348,7 +436,7 @@ const SiteHeader = () => {
                                         } else {
                                             return (
                                                 <Button
-                                                    key={opt.label+"mobile"}
+                                                    key={opt.label + "mobile"}
                                                     color="inherit"
                                                     onClick={() => {
                                                         handleMenuSelect(opt.path);
@@ -399,7 +487,7 @@ const SiteHeader = () => {
                                                     >
                                                         {movieSubMenuOptions.map((subOpt) => (
                                                             <MenuItem
-                                                                key={subOpt.label+"subMovies"}
+                                                                key={subOpt.label + "subMovies"}
                                                                 onClick={() => {
                                                                     handleMenuSelect(subOpt.path);
                                                                     handleSubMenuClose();
@@ -445,7 +533,7 @@ const SiteHeader = () => {
                                                     >
                                                         {peopleSubMenuOptions.map((subOpt) => (
                                                             <MenuItem
-                                                                key={subOpt.label+"subPeople"}
+                                                                key={subOpt.label + "subPeople"}
                                                                 onClick={() => {
                                                                     handleMenuSelect(subOpt.path);
                                                                     handleSubMenuClose();
