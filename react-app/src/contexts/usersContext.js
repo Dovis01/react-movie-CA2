@@ -62,6 +62,7 @@ const UsersContextProvider = (props) => {
 
     const signout = () => {
         setTimeout(() => setIsAuthenticated(false), 100);
+        localStorage.removeItem('token');
     }
 
     return (
