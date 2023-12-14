@@ -1,5 +1,12 @@
 import movieModel from './movieModel';
-import {getGenres, getUpcomingMovies} from '../tmdb-api';
+import {
+    getDiscoverMovies,
+    getGenres, getMovie,
+    getMovieImages,
+    getNowPlayingMovies,
+    getUpcomingMovies,
+    getWeekTrendingMovies
+} from '../tmdb-api';
 import asyncHandler from 'express-async-handler';
 import express from 'express';
 
@@ -37,14 +44,45 @@ router.get('/:id', asyncHandler(async (req, res) => {
     }
 }));
 
+router.get('/tmdb/discover', asyncHandler(async (req, res) => {
+    const { page } = req.query;
+    const discoverMovies = await getDiscoverMovies(page);
+    res.status(200).json(discoverMovies);
+}));
+
 router.get('/tmdb/upcoming', asyncHandler(async (req, res) => {
-    const upcomingMovies = await getUpcomingMovies();
+    const { page } = req.query;
+    const upcomingMovies = await getUpcomingMovies(page);
     res.status(200).json(upcomingMovies);
+}));
+
+router.get('/tmdb/nowplaying', asyncHandler(async (req, res) => {
+    const { page } = req.query;
+    const nowPlayingMovies = await getNowPlayingMovies (page);
+    res.status(200).json(nowPlayingMovies);
+}));
+
+router.get('/tmdb/weektrending', asyncHandler(async (req, res) => {
+    const { page } = req.query;
+    const weekTrendingMovies = await getWeekTrendingMovies(page);
+    res.status(200).json(weekTrendingMovies);
 }));
 
 router.get('/tmdb/genres', asyncHandler(async (req, res) => {
     const genresList = await getGenres();
     res.status(200).json(genresList);
+}));
+
+router.get('/tmdb/movies/:id/images', asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const imageList = await getMovieImages(id);
+    res.status(200).json(imageList);
+}));
+
+router.get('/tmdb/movie/:id', asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const movie = await getMovie(id);
+    res.status(200).json(movie);
 }));
 
 export default router;
