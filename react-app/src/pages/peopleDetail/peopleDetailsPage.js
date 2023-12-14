@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from 'react-router-dom';
 import PeopleDetailPageTemplate from "../../components/template/templatePeoplePage";
-import { getPopularPeopleDetail} from '../../api/tmdb-api'
+import { getPopularPeopleDetail} from '../../api/tmdb-customized-api'
 import { useQuery } from "react-query";
 import Spinner from '../../components/spinner'
 import PeopleDetails from "../../components/peopleDetails";

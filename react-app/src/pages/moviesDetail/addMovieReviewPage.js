@@ -3,7 +3,7 @@ import PageTemplate from "../../components/template/templateMoviePage";
 import ReviewForm from "../../components/reviewForm";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "react-query";
-import { getMovie } from "../../api/tmdb-api";
+import { getMovie } from "../../api/tmdb-customized-api";
 import Spinner from "../../components/spinner";
 
 const WriteReviewPage = () => {

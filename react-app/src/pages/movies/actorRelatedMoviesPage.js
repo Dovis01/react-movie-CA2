@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {getPeopleMovieCredits} from "../../api/tmdb-api";
+import {getPeopleMovieCredits} from "../../api/tmdb-customized-api";
 import MovieListPageTemplate from "../../components/template/templateMovieListPage";
 import {useQuery} from "react-query";
 import Spinner from "../../components/spinner";

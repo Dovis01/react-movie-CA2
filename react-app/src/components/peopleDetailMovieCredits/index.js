@@ -4,7 +4,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import {useQuery} from "react-query";
-import {getPeopleMovieCredits} from "../../api/tmdb-api";
+import {getPeopleMovieCredits} from "../../api/tmdb-customized-api";
 import Spinner from "../spinner";
 import React from "react";
 import {CardActionArea} from "@mui/material";

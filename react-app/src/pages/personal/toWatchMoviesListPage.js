@@ -2,7 +2,7 @@ import React, {useContext, useState} from "react";
 import PageTemplate from "../../components/template/templateMovieListPage";
 import { MoviesContext } from "../../contexts/moviesContext";
 import { useQueries } from "react-query";
-import { getMovie } from "../../api/tmdb-api";
+import { getMovie } from "../../api/tmdb-customized-api";
 import Spinner from '../../components/spinner'
 import WriteReview from "../../components/cardIconAndAvatar/icons/writeReview";
 import RemoveFromWatchList from "../../components/cardIconAndAvatar/icons/removeFromWatchList";

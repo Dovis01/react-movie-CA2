@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {getNowPlayingMovies} from "../../api/tmdb-api";
+import {getNowPlayingMovies} from "../../api/tmdb-customized-api";
 import PageTemplate from "../../components/template/templateMovieListPage";
 import AddToFavorites from "../../components/cardIconAndAvatar/icons/addToFavorites";
 import AddToWatchList from "../../components/cardIconAndAvatar/icons/addToWatchList";

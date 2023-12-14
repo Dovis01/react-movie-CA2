@@ -4,7 +4,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import {useQuery} from "react-query";
-import {getMovieCredits, getMovieVideos} from "../../api/tmdb-api";
+import {getMovieCredits, getMovieVideos} from "../../api/tmdb-customized-api";
 import Spinner from "../spinner";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import React, {useState} from "react";

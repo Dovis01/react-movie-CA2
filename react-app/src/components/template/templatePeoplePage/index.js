@@ -3,7 +3,7 @@ import PeopleHeader from "../../headerPeople";
 import Grid from "@mui/material/Grid";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
-import {getPeopleImages} from "../../../api/tmdb-api";
+import {getPeopleImages} from "../../../api/tmdb-customized-api";
 import {useQuery} from "react-query";
 import Spinner from '../../spinner'
 import backgroundImageStyles from "../../../theme/background";
