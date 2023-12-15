@@ -32,7 +32,7 @@ router.post('/', asyncHandler(async (req, res) => {
     } catch (error) {
         // Log the error and return a generic error message
         console.error(error);
-        res.status(500).json({success: false, msg: 'Internal server error.'});
+        res.status(500).json({success: false, msg: 'Internal server error.', code: 500});
     }
 }));
 
@@ -50,6 +50,14 @@ router.put('/:id', async (req, res) => {
 });
 
 async function registerUser(req, res) {
+    let userUsername = await User.findByUserName(req.body.username);
+    let userEmail = await User.findByEmail(req.body.email);
+    if (userUsername) {
+        return res.status(400).json({success: false, msg: 'Username already exists.', code: 400});
+    }
+    if (userEmail) {
+        return res.status(401).json({success: false, msg: 'Email already exists.', code: 401});
+    }
     // Add input validation logic here
     await User.create(req.body);
     res.status(201).json({success: true, msg: 'User successfully created.', code: 201});
@@ -58,13 +66,13 @@ async function registerUser(req, res) {
 async function authenticateUserByUsername(req, res) {
     const user = await User.findByUserName(req.body.username);
     if (!user) {
-        return res.status(401).json({success: false, msg: 'Authentication failed. User not found.'});
+        return res.status(401).json({success: false, msg: 'Authentication failed. User not found. Please check your username.'});
     }
 
     const isMatch = await user.comparePassword(req.body.password);
     if (isMatch) {
         const token = jwt.sign({username: user.username}, process.env.SECRET);
-        res.status(200).json({success: true, token: 'BEARER ' + token, email:user.email});
+        res.status(200).json({success: true, token: 'BEARER ' + token, email: user.email});
     } else {
         res.status(401).json({success: false, msg: 'Wrong password.'});
     }
@@ -73,13 +81,13 @@ async function authenticateUserByUsername(req, res) {
 async function authenticateUserByEmail(req, res) {
     const user = await User.findByEmail(req.body.email);
     if (!user) {
-        return res.status(401).json({success: false, msg: 'Authentication failed. User not found.'});
+        return res.status(401).json({success: false, msg: 'Authentication failed. User not found. Please check your email.'});
     }
 
     const isMatch = await user.comparePassword(req.body.password);
     if (isMatch) {
         const token = jwt.sign({email: user.email}, process.env.SECRET);
-        res.status(200).json({success: true, token: 'BEARER ' + token, username:user.username});
+        res.status(200).json({success: true, token: 'BEARER ' + token, username: user.username});
     } else {
         res.status(401).json({success: false, msg: 'Wrong password.'});
     }

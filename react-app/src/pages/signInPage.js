@@ -37,48 +37,34 @@ const SignInPage = () => {
     });
 
     const login = async (event) => {
-        event.preventDefault()
-        if (signInMethod === "Username") {
-            try {
-                await usersContext.authenticateByUsername(user);
-                setSnackMessage(`Welcome back, ${user.username}`);
-                setSeverity('success');
-                setOpenSnackbar(true);
-            } catch (error) {
-                const errorMessage = error.message;
-                if (errorMessage === 'Authentication failed. User not found.') {
-                    setSnackMessage('Sorry, This user is not found.');
-                } else if (errorMessage === 'Wrong password.') {
-                    setSnackMessage('Incorrect user password. Please try again.');
-                } else if (errorMessage === 'Username and password are required.') {
-                    setSnackMessage('Both username and password are required, Please try again.');
-                } else {
-                    setSnackMessage('Sorry, Internal server error.');
-                }
-                setSeverity('error');
-                setOpenSnackbar(true);
-            }
-        } else {
-            try {
-                await usersContext.authenticateByEmail(user);
-                setSnackMessage(`Welcome back, ${usersContext.user.username}`);
-                setSeverity('success');
-                setOpenSnackbar(true);
-            } catch (error) {
-                const errorMessage = error.message;
-                if (errorMessage === 'Authentication failed. User not found.') {
-                    setSnackMessage('Sorry, This user is not found.');
-                } else if (errorMessage === 'Wrong password.') {
-                    setSnackMessage('Incorrect user password. Please try again.');
-                } else if (errorMessage === 'Email and password are required.') {
-                    setSnackMessage('Both email and password are required, Please try again.');
-                } else {
-                    setSnackMessage('Sorry, Internal server error.');
-                }
-                setSeverity('error');
-                setOpenSnackbar(true);
-            }
+        event.preventDefault();
+        const authenticationMethod = signInMethod === "Username"
+            ? usersContext.authenticateByUsername
+            : usersContext.authenticateByEmail;
+
+        try {
+            await authenticationMethod(user);
+            setSnackMessage(`Welcome back, ${user.username}`);
+            setSeverity('success');
+        } catch (error) {
+            handleAuthenticationError(error.message);
+        } finally {
+            setOpenSnackbar(true);
         }
+    };
+
+    const handleAuthenticationError = (errorMessage) => {
+        const errorMessages = {
+            'Authentication failed. User not found. Please check your username.': 'Sorry, This user is not found. Please check your username.',
+            'Authentication failed. User not found. Please check your email.': 'Sorry, This user is not found. Please check your email.',
+            'Wrong password.': 'Sorry, Incorrect user password. Please try again.',
+            'Username and password are required.': 'Both username and password are required, Please try again.',
+            'Email and password are required.': 'Both email and password are required, Please try again.'
+        };
+
+        setSnackMessage(errorMessages[errorMessage] || 'Sorry, Internal server error.');
+        setSeverity('error');
+        setOpenSnackbar(true);
     };
 
     const handleClickShowPassword = () => {
@@ -145,7 +131,7 @@ const SignInPage = () => {
                     <Header title={title}/>
                 </Grid>
                 <Grid container justifyContent="center" alignItems="center" sx={{mt: '-110px'}}>
-                    <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} lg={5} sx={{p: 16}}>
+                    <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} lg={5} sx={{p: 16,background: 'linear-gradient(180deg, rgba(237,190,210,1) 8%, rgba(176,207,244,1) 95%)'}}>
                         <Typography component="h4" variant="h4" sx={{textAlign: 'center', mt: '-70px'}}>
                             {"Sign In "}
                         </Typography>
@@ -162,6 +148,9 @@ const SignInPage = () => {
                                                    email: e.target.value
                                                });
                                            }}
+                                           inputProps={{
+                                               minLength: 8
+                                           }}
                                 />
                             )}
                             {signInMethod === "Username" && (
@@ -174,6 +163,9 @@ const SignInPage = () => {
                                                    ...user,
                                                    username: e.target.value
                                                });
+                                           }}
+                                           inputProps={{
+                                               maxLength: 9
                                            }}
                                 />
                             )}
@@ -199,6 +191,9 @@ const SignInPage = () => {
                                                    </IconButton>
                                                </InputAdornment>
                                            ),
+                                       }}
+                                       inputProps={{
+                                           maxLength: 30
                                        }}
                             />
                             <Paper sx={{margin: '10px', width: '100%', marginTop: '20px',marginBottom: '13px'}}>

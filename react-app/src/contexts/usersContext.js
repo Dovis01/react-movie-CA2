@@ -55,8 +55,11 @@ const UsersContextProvider = (props) => {
 
     const register = async (user) => {
         const result = await signup(user);
-        if(result.code !== 201){
-            throw new Error("Registration failed. Please try again.");
+        if(result.code === 400){
+            throw new Error(result.msg);
+        }
+        if(result.code === 401){
+            throw new Error(result.msg);
         }
     };
 

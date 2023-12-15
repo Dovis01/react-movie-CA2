@@ -34,8 +34,8 @@ const SignUpPage = () => {
         password: '',
     });
 
-    const register = (event) => {
-        let passwordRegEx = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+    const register = async (event) => {
+        let passwordRegEx = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%.*#?&])[A-Za-z\d@$!%.*#?&]{8,15}$/;
         const emailRegEx = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         const validPassword = passwordRegEx.test(user.password);
         const validEmail = emailRegEx.test(user.email);
@@ -43,26 +43,48 @@ const SignUpPage = () => {
         if (validEmail && validPassword && user.password === confirmPassword) {
             try {
                 usersContext.addUser(user);
-                usersContext.register(user);
+                await usersContext.register(user);
                 setSnackMessage(`Welcome, your username is ${user.username} and your email is ${user.email}`);
                 setSeverity('success');
                 setOpenSnackbar(true);
                 return;
             } catch (error) {
                 console.error(error);
-                setSnackMessage('The internal authentication server is error. Please try again later.');
-                setSeverity('error');
+                if(error.message === 'Username already exists.'){
+                    setSnackMessage('Username already exists.');
+                    setSeverity('error');
+                }else if(error.message === 'Email already exists.'){
+                    setSnackMessage('Email already exists.');
+                    setSeverity('error');
+                }else{
+                    setSnackMessage('The internal authentication server is error. Please try again later.');
+                    setSeverity('error');
+                }
                 setOpenSnackbar(true);
+                return;
             }
         }
+
         if (user.username === '' || user.email === '' || user.password === '' || confirmPassword === '') {
             setSnackMessage('All of the three fields are required.');
             setSeverity('error');
         } else if (!validEmail) {
             setSnackMessage('The email is not valid.');
             setSeverity('error');
-        } else if (!validPassword) {
-            setSnackMessage('The password is not valid.');
+        } else if (user.password.length < 8 ) {
+            setSnackMessage('Password must be 8-15 characters long, this is too short.');
+            setSeverity('error');
+        } else if ( user.password.length > 15) {
+            setSnackMessage('Password must be 8-15 characters long, this is too long.');
+            setSeverity('error');
+        } else if (!/(?=.*[A-Za-z])/.test(user.password)) {
+            setSnackMessage('Password must contain at least one letter.');
+            setSeverity('error');
+        } else if (!/(?=.*\d)/.test(user.password)) {
+            setSnackMessage('Password must contain at least one number.');
+            setSeverity('error');
+        } else if (!/(?=.*[@$!%.*#?&])/.test(user.password)) {
+            setSnackMessage('Password must contain at least one special character (@$!%.*#?&).');
             setSeverity('error');
         } else if (user.password !== confirmPassword) {
             setSnackMessage('Passwords do not match.');
@@ -152,9 +174,9 @@ const SignUpPage = () => {
                 <Grid item xs={12}>
                     <Header title={title}/>
                 </Grid>
-                <Grid container justifyContent="center" alignItems="center" sx={{mt: '-130px'}}>
-                    <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} lg={5.4} sx={{p: 16}}>
-                        <Typography component="h4" variant="h4" sx={{textAlign: 'center', mt: '-70px'}}>
+                <Grid container justifyContent="center" alignItems="center" sx={{mt: '-138px'}}>
+                    <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} lg={5.4} sx={{p: 16,background: 'linear-gradient(180deg, rgba(237,190,210,1) 8%, rgba(176,207,244,1) 95%)'}}>
+                        <Typography component="h4" variant="h4" sx={{textAlign: 'center', mt: '-88px'}}>
                             {"Sign Up "}
                         </Typography>
                         <Box component="form" noValidate
@@ -169,6 +191,9 @@ const SignUpPage = () => {
                                         username: e.target.value
                                     });
                                 }}
+                                inputProps={{
+                                    maxLength: 9
+                                }}
                                 variant="outlined"
                                 fullWidth
                                 margin="normal"
@@ -178,6 +203,9 @@ const SignUpPage = () => {
                                 required
                                 type={"email"}
                                 value={user.email}
+                                inputProps={{
+                                    minLength: 8
+                                }}
                                 onChange={(e) => {
                                     setUser({
                                         ...user,
@@ -199,6 +227,9 @@ const SignUpPage = () => {
                                         ...user,
                                         password: e.target.value
                                     });
+                                }}
+                                inputProps={{
+                                    maxLength: 30
                                 }}
                                 variant="outlined"
                                 fullWidth
@@ -240,10 +271,13 @@ const SignUpPage = () => {
                                         </InputAdornment>
                                     ),
                                 }}
+                                inputProps={{
+                                    maxLength: 30
+                                }}
                             />
-                            <Paper sx={{marginTop: '18px', width: "100%"}}>
+                            <Paper sx={{marginTop: '24px', width: "100%", marginBottom:'-26px'}}>
                                 <Button variant="contained" onClick={register}
-                                        sx={{width: '100%', marginTop: 1, height: '4em'}}>
+                                        sx={{width: '100%', height: '4em'}}>
                                     <EmailIcon sx={{mr: 1}}/>
                                     Sign up with UserName and Email
                                 </Button>
