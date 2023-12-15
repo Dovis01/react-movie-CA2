@@ -12,7 +12,7 @@ import MuiAlert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import ThirdPartyAuthSignIn from "../components/thirdPartyAuthSignIn";
 import {UsersContext} from "../contexts/usersContext";
-import {InputAdornment} from "@mui/material";
+import {InputAdornment, Slide} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 
@@ -103,18 +103,39 @@ const SignInPage = () => {
     return (
         <>
             <Snackbar
-                anchorOrigin={{vertical: "top", horizontal: "right"}}
+                anchorOrigin={{vertical: "top", horizontal: "center"}}
                 open={openSnackbar}
-                autoHideDuration={6000} // 6 seconds before auto close
-                sx={{marginTop: '76px'}}
+                TransitionComponent={(props) => <Slide {...props} direction="down" />}
+                autoHideDuration={3100}
                 onClose={handleSnackClose}
+                sx={{
+                    marginTop: '17.2vh',
+                    '& .MuiPaper-root': {
+                        borderRadius: 3,
+                        height: '45px',
+                        boxShadow: '0 5px 8px 5px rgba(255, 105, 135, .3)'
+                    }
+                }}
             >
                 <MuiAlert
                     severity={severity}
                     variant="filled"
                     onClose={handleSnackClose}
+                    sx={{
+                        ...(severity === 'error' && {
+                            background: 'linear-gradient(45deg, #FF5353 35%, #FF1919 95%)',
+                        }),
+                        ...(severity === 'success' && {
+                            background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                        }),
+                        fontWeight: 'bold',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontSize: '1rem',
+                    }}
                 >
-                    <Typography variant="h6">
+                    <Typography variant="h6" component="div">
                         {snackMessage}
                     </Typography>
                 </MuiAlert>

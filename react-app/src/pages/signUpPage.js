@@ -13,12 +13,17 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import EmailIcon from "@mui/icons-material/Email";
 import {UsersContext} from "../contexts/usersContext";
+import {InputAdornment, Slide} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import {Visibility, VisibilityOff} from "@mui/icons-material";
 
 
 const SignUpPage = () => {
     const title = "Sign Up Page";
     const navigate = useNavigate();
     const usersContext = useContext(UsersContext);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState('');
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackMessage, setSnackMessage] = useState('');
@@ -33,7 +38,7 @@ const SignUpPage = () => {
         let passwordRegEx = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
         const emailRegEx = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         const validPassword = passwordRegEx.test(user.password);
-        const validEmail= emailRegEx.test(user.email);
+        const validEmail = emailRegEx.test(user.email);
         event.preventDefault();
         if (validEmail && validPassword && user.password === confirmPassword) {
             try {
@@ -50,7 +55,7 @@ const SignUpPage = () => {
                 setOpenSnackbar(true);
             }
         }
-        if(user.username === '' || user.email === '' || user.password === '' || confirmPassword === ''){
+        if (user.username === '' || user.email === '' || user.password === '' || confirmPassword === '') {
             setSnackMessage('All of the three fields are required.');
             setSeverity('error');
         } else if (!validEmail) {
@@ -69,6 +74,18 @@ const SignUpPage = () => {
         setOpenSnackbar(true);
     }
 
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const handleClickShowConfirmPassword = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
     const handleSnackCloseSuccess = () => {
         setOpenSnackbar(false);
         navigate("/signin");
@@ -81,10 +98,17 @@ const SignUpPage = () => {
     return (
         <>
             <Snackbar
-                anchorOrigin={{vertical: "top", horizontal: "right"}}
+                anchorOrigin={{vertical: "top", horizontal: "center"}}
                 open={openSnackbar}
-                autoHideDuration={6000} // 6 seconds before auto close
-                sx={{marginTop: '76px'}}
+                autoHideDuration={3100}
+                sx={{
+                    marginTop: '17.2vh',
+                    '& .MuiPaper-root': {
+                        borderRadius: 3,
+                        height: '45px',
+                        boxShadow: '0 5px 8px 5px rgba(255, 105, 135, .3)'
+                    }
+                }}
                 onClose={() => {
                     if (severity === 'success') {
                         handleSnackCloseSuccess();
@@ -93,21 +117,36 @@ const SignUpPage = () => {
                     }
                 }}
             >
-                <MuiAlert
-                    severity={severity}
-                    variant="filled"
-                    onClose={() => {
-                        if (severity === 'success') {
-                            handleSnackCloseSuccess();
-                        } else {
-                            handleSnackCloseFailure();
-                        }
-                    }}
-                >
-                    <Typography variant="h6">
-                        {snackMessage}
-                    </Typography>
-                </MuiAlert>
+                <Slide direction= "down" in={openSnackbar} >
+                    <MuiAlert
+                        severity={severity}
+                        variant="filled"
+                        onClose={() => {
+                            if (severity === 'success') {
+                                handleSnackCloseSuccess();
+                            } else {
+                                handleSnackCloseFailure();
+                            }
+                        }}
+                        sx={{
+                            ...(severity === 'error' && {
+                                background: 'linear-gradient(45deg, #FF5353 35%, #FF1919 95%)',
+                            }),
+                            ...(severity === 'success' && {
+                                background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                            }),
+                            fontWeight: 'bold',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontSize: '1rem',
+                        }}
+                    >
+                        <Typography variant="h6">
+                            {snackMessage}
+                        </Typography>
+                    </MuiAlert>
+                </Slide>
             </Snackbar>
             <Grid container sx={{padding: '20px', height: '92%'}} style={backgroundImageStyles.backgroundMainContainer}>
                 <Grid item xs={12}>
@@ -150,8 +189,9 @@ const SignUpPage = () => {
                                 margin="normal"
                             />
                             <TextField
+                                id="password"
                                 label="Password"
-                                type="password"
+                                type={showPassword ? 'text' : 'password'}
                                 required
                                 value={user.password}
                                 onChange={(e) => {
@@ -163,16 +203,43 @@ const SignUpPage = () => {
                                 variant="outlined"
                                 fullWidth
                                 margin="normal"
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                            >
+                                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
                             />
                             <TextField
+                                id="confirmPassword"
                                 label="Confirm Password"
-                                type="password"
+                                type={showConfirmPassword ? 'text' : 'password'}
                                 required
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 variant="outlined"
                                 fullWidth
                                 margin="normal"
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowConfirmPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                            >
+                                                {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
                             />
                             <Paper sx={{marginTop: '18px', width: "100%"}}>
                                 <Button variant="contained" onClick={register}

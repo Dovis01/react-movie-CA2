@@ -9,6 +9,7 @@ import { MoviesContext } from "../../contexts/moviesContext";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
+import {Slide} from "@mui/material";
 
 const ratings = [
     {
@@ -104,8 +105,18 @@ const ReviewForm = ({ movie }) => {
             </Typography>
 
             <Snackbar
-                sx={styles.snack}
+                sx={{
+                    ...styles.snack,
+                    marginTop: '18vh',
+                    '& .MuiPaper-root': {
+                        borderRadius: 3,
+                        height: '45px',
+                        boxShadow: '0 5px 8px 5px rgba(255, 105, 135, .3)'
+                    }
+                }}
+                TransitionComponent={(props) => <Slide {...props} direction="down" />}
                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                autoHideDuration={6000}
                 open={open}
                 onClose={handleSnackClose}
             >
@@ -113,8 +124,16 @@ const ReviewForm = ({ movie }) => {
                     severity="success"
                     variant="filled"
                     onClose={handleSnackClose}
+                    sx={{
+                        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                        fontWeight: 'bold',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontSize: '1rem',
+                    }}
                 >
-                    <Typography variant="h4">
+                    <Typography variant="h5">
                         Thank you for submitting a review
                     </Typography>
                 </MuiAlert>
