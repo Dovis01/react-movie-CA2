@@ -70,6 +70,7 @@ const UsersContextProvider = (props) => {
             value={{
                 user,
                 isAuthenticated,
+                setIsAuthenticated,
                 addUser,
                 removeUser,
                 authenticateByUsername,

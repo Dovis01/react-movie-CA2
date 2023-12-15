@@ -129,7 +129,7 @@ const SiteHeader = () => {
                             }}
                             onClick={(event) => handleUserMenu(event)}
                         >
-                            {user.username.substring(0, 1) || user.email.substring(0, 1)}
+                            {user.username ? user.username.substring(0, 1) : user.displayName.substring(0, 1)}
                         </Avatar>
                     </Tooltip>
                     <Menu
@@ -191,7 +191,7 @@ const SiteHeader = () => {
                             <ListItemIcon>
                                 <BadgeIcon fontSize="medium"/>
                             </ListItemIcon>
-                            {user.username}
+                            {user.username ? user.username : user.displayName}
                         </MenuItem>
                         <Divider/>
                         {isMobile ? (
