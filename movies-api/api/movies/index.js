@@ -1,8 +1,8 @@
 import movieModel from './movieModel';
 import {
     getDiscoverMovies,
-    getGenres, getMovie,
-    getMovieImages,
+    getGenres, getMovie, getMovieCredits,
+    getMovieImages, getMovieRecommendations, getMovieReviews, getMovieVideos,
     getNowPlayingMovies,
     getUpcomingMovies,
     getWeekTrendingMovies
@@ -68,18 +68,43 @@ router.get('/tmdb/weektrending', asyncHandler(async (req, res) => {
     res.status(200).json(weekTrendingMovies);
 }));
 
+router.get('/tmdb/:id/recommendations', asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { page } = req.query;
+    const recommendationsMoviesList = await getMovieRecommendations(id,page);
+    res.status(200).json(recommendationsMoviesList);
+}));
+
 router.get('/tmdb/genres', asyncHandler(async (req, res) => {
     const genresList = await getGenres();
     res.status(200).json(genresList);
 }));
 
-router.get('/tmdb/movies/:id/images', asyncHandler(async (req, res) => {
+router.get('/tmdb/:id/images', asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const imageList = await getMovieImages(id);
-    res.status(200).json(imageList);
+    const imagesList = await getMovieImages(id);
+    res.status(200).json(imagesList);
 }));
 
-router.get('/tmdb/movie/:id', asyncHandler(async (req, res) => {
+router.get('/tmdb/:id/videos', asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const videosList = await getMovieVideos(id);
+    res.status(200).json(videosList);
+}));
+
+router.get('/tmdb/:id/credits', asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const creditsList = await getMovieCredits(id);
+    res.status(200).json(creditsList);
+}));
+
+router.get('/tmdb/:id/reviews', asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const reviewsList = await getMovieReviews(id);
+    res.status(200).json(reviewsList);
+}));
+
+router.get('/tmdb/:id', asyncHandler(async (req, res) => {
     const { id } = req.params;
     const movie = await getMovie(id);
     res.status(200).json(movie);

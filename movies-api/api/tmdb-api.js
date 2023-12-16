@@ -133,6 +133,39 @@ export const getWeekTrendingMovies = (page) => {
         });
 };
 
+export const getMovieRecommendations = (id,page) => {
+    const pageLast = page * 2;
+    const pageFirst = pageLast - 1;
+
+    return Promise.all([
+        fetch(`https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&include_adult=false&include_video=false&page=${pageFirst}`),
+        fetch(`https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&include_adult=false&include_video=false&page=${pageLast}`)
+    ])
+        .then(responses => {
+            for (const response of responses) {
+                if (!response.ok) {
+                    throw new Error('Problem fetching movies');
+                }
+            }
+            return Promise.all(responses.map(response => response.json()));
+        })
+        .then(data => {
+            const moviesPage1 = data[0].results || [];
+            const moviesPage2 = data[1].results || [];
+            const combinedMovies = [...moviesPage1, ...moviesPage2];
+
+            return {
+                page: page,
+                results: combinedMovies,
+                total_results: data[0].total_results,
+                total_pages: Math.ceil(data[0].total_results/40)
+            };
+        })
+        .catch((error) => {
+            throw error;
+        });
+};
+
 export const getGenres = async () => {
     try {
         const response = await fetch(
@@ -176,5 +209,50 @@ export const getMovieImages = (id) => {
         .catch((error) => {
             throw error
         });
+};
+
+
+export const getMovieVideos = (id) => {
+    return fetch(
+        `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${process.env.REACT_APP_TMDB_KEY}`
+    ).then((response) => {
+        if (!response.ok) {
+            throw new Error(response.json().message);
+        }
+        return response.json();
+
+    })
+        .catch((error) => {
+            throw error
+        });
+};
+
+export const getMovieCredits = (id) => {
+    return fetch(
+        `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.REACT_APP_TMDB_KEY}`
+    ).then((response) => {
+        if (!response.ok) {
+            throw new Error(response.json().message);
+        }
+        return response.json();
+
+    })
+        .catch((error) => {
+            throw error
+        });
+};
+
+export const getMovieReviews = (id) => {
+    return fetch(
+        `https://api.themoviedb.org/3/movie/${id}/reviews?api_key=${process.env.REACT_APP_TMDB_KEY}`
+    ).then((response) => {
+        if (!response.ok) {
+            throw new Error(response.json().message);
+        }
+        return response.json();
+
+    }).catch((error) => {
+        throw error
+    });
 };
 

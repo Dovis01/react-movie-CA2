@@ -25,7 +25,7 @@ export const getUpcomingMovies = async (args) => {
         method: 'get',
     });
     if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error(response.json().message);
     }
     return response.json();
 };
@@ -42,7 +42,7 @@ export const getNowPlayingMovies = async (args) => {
         method: 'get',
     });
     if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error(response.json().message);
     }
     return response.json();
 };
@@ -58,7 +58,23 @@ export const getWeekTrendingMovies = async (args) => {
         method: 'get',
     });
     if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error(response.json().message);
+    }
+    return response.json();
+};
+
+export const getMovieRecommendations =async (args) => {
+    const [, pageIdPart] = args.queryKey;
+    const {page,id} = pageIdPart;
+
+    const response = await fetch(`http://localhost:8080/api/movies/tmdb/${id}/recommendations?page=${page}`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        method: 'get',
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
     }
     return response.json();
 };
@@ -66,7 +82,7 @@ export const getWeekTrendingMovies = async (args) => {
 export const getMovie = async (args) => {
     const [, idPart] = args.queryKey;
     const {id} = idPart;
-    const response = await fetch(`http://localhost:8080/api/movies/tmdb/movie/${id}`, {
+    const response = await fetch(`http://localhost:8080/api/movies/tmdb/${id}`, {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -94,103 +110,62 @@ export const getGenres = async () => {
 export const getMovieImages = async ({queryKey}) => {
     const [, idPart] = queryKey;
     const {id} = idPart;
-    const response = await fetch(`http://localhost:8080/api/movies/tmdb/movies/${id}/images`, {
+    const response = await fetch(`http://localhost:8080/api/movies/tmdb/${id}/images`, {
         headers: {
             'Content-Type': 'application/json',
         },
         method: 'get',
     });
     if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error(response.json().message);
     }
     return response.json();
 };
 
-export const getMovieVideos = ({queryKey}) => {
+
+export const getMovieVideos =async ({queryKey}) => {
     const [, idPart] = queryKey;
     const {id} = idPart;
-    return fetch(
-        `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${process.env.REACT_APP_TMDB_KEY}`
-    ).then((response) => {
-        if (!response.ok) {
-            throw new Error(response.json().message);
-        }
-        return response.json();
-
-    })
-        .catch((error) => {
-            throw error
-        });
-};
-
-
-export const getMovieCredits = ({queryKey}) => {
-    const [, idPart] = queryKey;
-    const {id} = idPart;
-    return fetch(
-        `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.REACT_APP_TMDB_KEY}`
-    ).then((response) => {
-        if (!response.ok) {
-            throw new Error(response.json().message);
-        }
-        return response.json();
-
-    })
-        .catch((error) => {
-            throw error
-        });
-};
-
-export const getMovieReviews = ({queryKey}) => {
-    const [, idPart] = queryKey;
-    const {id} = idPart;
-    return fetch(
-        `https://api.themoviedb.org/3/movie/${id}/reviews?api_key=${process.env.REACT_APP_TMDB_KEY}`
-    ).then((response) => {
-        if (!response.ok) {
-            throw new Error(response.json().message);
-        }
-        return response.json();
-
-    }).catch((error) => {
-        throw error
+    const response = await fetch(`http://localhost:8080/api/movies/tmdb/${id}/videos`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        method: 'get',
     });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
 };
 
-export const getMovieRecommendations = (args) => {
-    const [, pageIdPart] = args.queryKey;
-    const {page,id} = pageIdPart;
+export const getMovieCredits = async ({queryKey}) => {
+    const [, idPart] = queryKey;
+    const {id} = idPart;
+    const response = await fetch(`http://localhost:8080/api/movies/tmdb/${id}/credits`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        method: 'get',
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
+};
 
-    const pageLast = page * 2;
-    const pageFirst = pageLast - 1;
-
-    return Promise.all([
-        fetch(`https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&include_adult=false&include_video=false&page=${pageFirst}`),
-        fetch(`https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&include_adult=false&include_video=false&page=${pageLast}`)
-    ])
-        .then(responses => {
-            for (const response of responses) {
-                if (!response.ok) {
-                    throw new Error('Problem fetching movies');
-                }
-            }
-            return Promise.all(responses.map(response => response.json()));
-        })
-        .then(data => {
-            const moviesPage1 = data[0].results || [];
-            const moviesPage2 = data[1].results || [];
-            const combinedMovies = [...moviesPage1, ...moviesPage2];
-
-            return {
-                page: pageFirst,
-                results: combinedMovies,
-                total_results: combinedMovies.length,
-                total_pages: Math.floor(combinedMovies.length/40)+1
-            };
-        })
-        .catch((error) => {
-            throw error;
-        });
+export const getMovieReviews = async ({queryKey}) => {
+    const [, idPart] = queryKey;
+    const {id} = idPart;
+    const response = await fetch(`http://localhost:8080/api/movies/tmdb/${id}/reviews`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        method: 'get',
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
 };
 
 export const getPopularPeople = (args) => {
