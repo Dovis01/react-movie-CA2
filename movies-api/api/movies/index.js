@@ -62,7 +62,7 @@ router.get('/tmdb/nowplaying', asyncHandler(async (req, res) => {
     res.status(200).json(nowPlayingMovies);
 }));
 
-router.get('/tmdb/weektrending', asyncHandler(async (req, res) => {
+router.get('/tmdb/week_trending', asyncHandler(async (req, res) => {
     const { page } = req.query;
     const weekTrendingMovies = await getWeekTrendingMovies(page);
     res.status(200).json(weekTrendingMovies);

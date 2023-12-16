@@ -51,7 +51,7 @@ export const getWeekTrendingMovies = async (args) => {
     const [, pagePart] = args.queryKey;
     const {page} = pagePart;
 
-    const response = await fetch(`http://localhost:8080/api/movies/tmdb/weektrending?page=${page}`, {
+    const response = await fetch(`http://localhost:8080/api/movies/tmdb/week_trending?page=${page}`, {
         headers: {
             'Content-Type': 'application/json',
         },
