@@ -81,7 +81,7 @@ const SignInPage = () => {
 
     const handleSnackClose = (event) => {
         if (usersContext.isAuthenticated === true) {
-            navigate(from);
+            navigate(from,{state: {user:usersContext.user}});
         }
         setOpenSnackbar(false);
     };

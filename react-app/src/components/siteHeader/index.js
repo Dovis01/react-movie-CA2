@@ -99,7 +99,6 @@ const SiteHeader = () => {
 
     const handleUserMenuClose = () => {
         setUserAnchorEl(null);
-        setMobileSubAnchorEl(null);
     };
 
     const handleUserLogOut = () => {
@@ -108,6 +107,11 @@ const SiteHeader = () => {
         moviesContext.clearPersonalData();
         navigate("/");
     };
+
+    const handleAccountProfile = () => {
+        handleUserSubMenuClose();
+        navigate("/account/profile", {state: {user:user}});
+    }
 
     const userAuthButton = () => {
         if (isUserLoggedIn) {
@@ -149,7 +153,7 @@ const SiteHeader = () => {
                                 ...(isMobile
                                     ? {}
                                     : {
-                                        width: '8.5%',
+                                        width: '8.9%',
                                         maxWidth: 'none',
                                     }),
                                 overflow: 'visible',
@@ -184,7 +188,7 @@ const SiteHeader = () => {
                         open={userOpen}
                         onClose={handleUserMenuClose}
                     >
-                        <MenuItem>
+                        <MenuItem onClick={handleAccountProfile}>
                             <Avatar/> My Profile
                         </MenuItem>
                         <MenuItem>

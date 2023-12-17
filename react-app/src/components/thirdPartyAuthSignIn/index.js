@@ -27,8 +27,13 @@ const ThirdPartyAuthByGoogle = () => {
             const result = await signInWithPopup(auth, googleProvider);
             // Google 登录成功后，可以获取用户信息
             const user = result.user;
-            // 处理登录成功逻辑，例如设置用户状态或导航到其他页面
-            usersContext.addUser(user);
+            const userEntity = {
+                uid: user.uid,
+                displayName: user.displayName,
+                email: user.email,
+                token:user.accessToken,
+            };
+            usersContext.addUser(userEntity);
             usersContext.setIsAuthenticated(true);
             setSnackMessage('Welcome ' + user.displayName + ', your email is ' + user.email);
             setSeverity('success');
@@ -107,7 +112,13 @@ const ThirdPartyAuthByGitHub = () => {
         try {
             const result = await signInWithPopup(auth, githubProvider);
             const user = result.user;
-            usersContext.addUser(user);
+            const userEntity = {
+                uid: user.uid,
+                displayName: user.displayName,
+                email: user.email,
+                token:user.accessToken,
+            };
+            usersContext.addUser(userEntity);
             usersContext.setIsAuthenticated(true);
             setSnackMessage(`Welcome ${user.displayName}, your email is ${user.email}`);
             setSeverity('success');

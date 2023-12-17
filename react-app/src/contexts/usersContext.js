@@ -4,10 +4,9 @@ import {loginByEmail, loginByUsername, signup} from "../api/user-api";
 export const UsersContext = React.createContext(null);
 
 const UsersContextProvider = (props) => {
-    const existingToken = localStorage.getItem("token");
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [authToken, setAuthToken] = useState(existingToken);
+    const [authToken, setAuthToken] = useState(null);
 
     /**
      * Authentication part
@@ -74,6 +73,7 @@ const UsersContextProvider = (props) => {
     return (
         <UsersContext.Provider
             value={{
+                authToken,
                 user,
                 isAuthenticated,
                 setIsAuthenticated,
