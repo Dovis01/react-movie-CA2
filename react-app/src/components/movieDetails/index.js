@@ -5,12 +5,13 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MonetizationIcon from "@mui/icons-material/MonetizationOn";
 import StarRate from "@mui/icons-material/StarRate";
 import NavigationIcon from "@mui/icons-material/Navigation";
+import AddCommentIcon from '@mui/icons-material/AddComment';
 import Fab from "@mui/material/Fab";
 import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
 import MovieReviews from "../movieReviews"
 import Button from "@mui/material/Button";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 
 const root = {
@@ -25,6 +26,11 @@ const chip = {margin: 0.5};
 
 const MovieDetails = ({movie}) => {
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const navigate = useNavigate();
+
+    const handleAddReview = () => {
+        navigate('/reviews/form', {state: {movieId: movie.id}});
+    }
 
     return (
         <>
@@ -75,13 +81,13 @@ const MovieDetails = ({movie}) => {
                             variant="outlined"
                             sx={{
                                 ...chip,
-                                borderRadius: '16px', // 保持椭圆形状
+                                borderRadius: '16px',
                                 color: 'grey',
                                 borderColor: 'grey',
-                                textTransform: 'none', // 防止字母大写
+                                textTransform: 'none',
                                 '&:hover': {
-                                    borderColor: 'grey', // 鼠标悬停时边框颜色
-                                    backgroundColor: 'rgba(0, 0, 0, 0.08)' // 鼠标悬停时的背景颜色，根据需要调整
+                                    borderColor: 'grey',
+                                    backgroundColor: 'rgba(0, 0, 0, 0.08)'
                                 }
                             }}
                         >
@@ -103,16 +109,16 @@ const MovieDetails = ({movie}) => {
             <Paper component="ul" sx={{...root}}>
                 <Link to={`/movies/${movie.id}/recommendations`}>
                     <Button variant="contained" size="small" color="primary" sx={{
-                        borderRadius: '20px', // 增加borderRadius以获得椭圆形的按钮
-                        marginBottom: '1em',  // 增加marginBottom以增加下间距
+                        borderRadius: '20px',
+                        marginBottom: '1em',
                     }}>
                         More Movie Recommendations ...
                     </Button>
                 </Link>
                 <Link to={`/movies/${movie.id}/related_actors`}>
                     <Button variant="contained" size="small" color="primary" sx={{
-                        borderRadius: '20px', // 增加borderRadius以获得椭圆形的按钮
-                        marginBottom: '1em',  // 增加marginBottom以增加下间距
+                        borderRadius: '20px',
+                        marginBottom: '1em',
                         marginLeft: '1em',
                     }}>
                         Show All Movie Related Credits ...
@@ -121,13 +127,28 @@ const MovieDetails = ({movie}) => {
             </Paper>
 
             <Fab
+                color="info"
+                variant="extended"
+                onClick={handleAddReview}
+                sx={{
+                    position: 'fixed',
+                    bottom: '5em',
+                    right: '1em'
+                }}
+            >
+                <AddCommentIcon sx={{mr:0.6,mt:0.5}}/>
+                Add Reviews
+            </Fab>
+            <Fab
                 color="secondary"
                 variant="extended"
                 onClick={() => setDrawerOpen(true)}
                 sx={{
+                    width:'153px',
                     position: 'fixed',
                     bottom: '1em',
-                    right: '1em'
+                    right: '1em',
+                    height:'47px'
                 }}
             >
                 <NavigationIcon/>

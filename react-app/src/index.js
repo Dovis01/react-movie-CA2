@@ -60,8 +60,8 @@ const App = () => {
                             <Route path="/people/popular/:actorId/movies/:movieId" element={<MoviePage/>}/>
                             <Route path="/movies/:id/recommendations" element={<MovieRecommendationsPage/>}/>
                             <Route path="/movies/:id/related_actors" element={<MovieRelatedPeoplePage/>}/>
-                            <Route path="/reviews/form" element={<AddMovieReviewPage/>}/>
                             <Route element={<ProtectedRoutes/>}>
+                                <Route path="/reviews/form" element={<AddMovieReviewPage/>}/>
                                 <Route path="/:username/favorites" element={<FavoriteMoviesPage/>}/>
                                 <Route path="/:username/towatchlist" element={<ToWatchMoviesListPage/>}/>
                                 <Route path="/:username/reviews" element={<PersonalReviewsPage/>}/>

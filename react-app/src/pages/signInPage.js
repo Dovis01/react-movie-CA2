@@ -81,6 +81,16 @@ const SignInPage = () => {
 
     const handleSnackClose = (event) => {
         if (usersContext.isAuthenticated === true) {
+            if(from ==="/reviews/form" && !location.state?.from.state?.movieId){
+                navigate(`/${usersContext.user.username}/favorites`);
+                setOpenSnackbar(false);
+                return;
+            }
+            if(from ==="/reviews/form" && location.state.from.state.movieId){
+                navigate(from,{state: {movieId: location.state.from.state.movieId}});
+                setOpenSnackbar(false);
+                return;
+            }
             navigate(from,{state: {user:usersContext.user}});
         }
         setOpenSnackbar(false);
