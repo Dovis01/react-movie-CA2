@@ -19,13 +19,12 @@ import {Visibility, VisibilityOff} from "@mui/icons-material";
 
 const AccountProfilePage = () => {
     const location = useLocation();
-    const OriginalUser = location.state.user;
+    const originalUser = location.state.user;
     const [showResetPassword, setShowResetPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState('');
-    const userStorageName = OriginalUser.username ? OriginalUser.username : OriginalUser.displayName;
     const [value, setValue] = useState(0);
-    const [updatedUser, setUpdatedUser] = useState(OriginalUser);
+    const [updatedUser, setUpdatedUser] = useState(originalUser);
 
     function TabPanel(props) {
         const {children, value, index, ...other} = props;
@@ -96,7 +95,7 @@ const AccountProfilePage = () => {
                             <Toolbar sx={{alignItems: 'center', justifyContent: 'center'}}>
                                 <Typography variant="h6" color="inherit" noWrap
                                             sx={{fontSize: "1.5rem", color: 'white'}}>
-                                    {userStorageName} Profile
+                                    {originalUser.username} Profile
                                 </Typography>
                             </Toolbar>
                         </AppBar>
@@ -116,7 +115,7 @@ const AccountProfilePage = () => {
                                     sx={{width: 128, height: 128}}
                                 />
                                 <Typography variant="h5" component="h2" sx={{mt: '9px !important'}}>
-                                    {userStorageName}
+                                    {originalUser.username}
                                 </Typography>
                                 <Stack direction="row" justifyContent="space-between" sx={{width: '100%',mt:'9px !important'}}>
                                     <Typography variant="body1" fontWeight="bold">Number of favorites</Typography>

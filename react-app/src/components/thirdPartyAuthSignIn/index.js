@@ -29,7 +29,7 @@ const ThirdPartyAuthByGoogle = () => {
             const user = result.user;
             const userEntity = {
                 uid: user.uid,
-                displayName: user.displayName,
+                username: user.displayName,
                 email: user.email,
                 token:user.accessToken,
             };
@@ -114,7 +114,7 @@ const ThirdPartyAuthByGitHub = () => {
             const user = result.user;
             const userEntity = {
                 uid: user.uid,
-                displayName: user.displayName,
+                username: user.displayName,
                 email: user.email,
                 token:user.accessToken,
             };
