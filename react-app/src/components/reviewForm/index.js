@@ -10,6 +10,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
 import {Slide} from "@mui/material";
+import {UsersContext} from "../../contexts/usersContext";
 
 const ratings = [
     {
@@ -63,7 +64,9 @@ const styles = {
 
 const ReviewForm = ({ movie }) => {
     const context = useContext(MoviesContext);
+    const usersContext = useContext(UsersContext);
     const [rating, setRating] = useState(3);
+    const user = usersContext.user;
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -88,14 +91,14 @@ const ReviewForm = ({ movie }) => {
     const onSubmit = (review) => {
         review.movieId = movie.id;
         review.rating = rating;
-        // console.log(review);
+        console.log(review);
         context.addReview(movie, review);
         setOpen(true); // NEW
     };
 
     const handleSnackClose = (event) => {
         setOpen(false);
-        navigate("/movies/favorites");
+        navigate(`/${user.username}/favorites`);
     };
 
     return (

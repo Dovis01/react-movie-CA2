@@ -65,16 +65,24 @@ const MoviesContextProvider = (props) => {
         setMyReviews( {...myReviews, [movie.id]: review } )
     };
 
+    const removeReview = (movie) => {
+        const newReviews = { ...myReviews };
+        delete newReviews[movie.id];
+        setMyReviews(newReviews);
+    };
+
 
     return (
         <MoviesContext.Provider
             value={{
+                myReviews,
                 favorites,
                 toWatchList,
                 addToFavorites,
                 removeFromFavorites,
                 removeFromWatchList,
                 addReview,
+                removeReview,
                 addToWatchList,
                 clearPersonalData,
             }}

@@ -8,6 +8,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import BadgeIcon from '@mui/icons-material/Badge';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
+import ReviewsIcon from '@mui/icons-material/Reviews';
 import MenuItem from "@mui/material/MenuItem";
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import Menu from "@mui/material/Menu";
@@ -39,6 +40,7 @@ const SiteHeader = () => {
     const moviesContext = useContext(MoviesContext);
     const usersContext = useContext(UsersContext);
     const user = usersContext.user;
+    let profileURL = '';
 
     useEffect(() => {
         setIsUserLoggedIn(usersContext.isAuthenticated);
@@ -59,13 +61,22 @@ const SiteHeader = () => {
         {label: "Week Trending", path: "/people/weektrending"},
     ];
     const personalSubMenuOptions = [
-        {label: "Favorites", path: "/movies/favorites"},
-        {label: "ToWatchList", path: "/movies/watchlist"},
+        {label: "Favorites", path: ''},
+        {label: "ToWatchList", path: ''},
+        {label: "Reviews", path: ''},
     ];
+
+    if(usersContext.isAuthenticated){
+        personalSubMenuOptions.forEach((subOpt) => {
+            subOpt.path = `/${usersContext.user.username}/${subOpt.label.toLowerCase()}`;
+        });
+        profileURL = `/${usersContext.user.username}/profile`;
+    }
 
     const personalIconMapping = {
         "Favorites": <FavoriteIcon/>,
         "ToWatchList": <SubscriptionsIcon/>,
+        "Reviews": <ReviewsIcon/>,
     };
 
     const handleMenuSelect = (pageURL) => {
@@ -108,9 +119,9 @@ const SiteHeader = () => {
         navigate("/");
     };
 
-    const handleAccountProfile = () => {
+    const handleAccountProfile = (profileURL) => {
         handleUserSubMenuClose();
-        navigate("/account/profile", {state: {user:user}});
+        navigate(profileURL, {state: {user:user}});
     }
 
     const userAuthButton = () => {
@@ -133,7 +144,7 @@ const SiteHeader = () => {
                             }}
                             onClick={(event) => handleUserMenu(event)}
                         >
-                            {user.username ? user.username.substring(0, 1) : user.displayName.substring(0, 1)}
+                            { user.username.substring(0, 1) }
                         </Avatar>
                     </Tooltip>
                     <Menu
@@ -188,7 +199,7 @@ const SiteHeader = () => {
                         open={userOpen}
                         onClose={handleUserMenuClose}
                     >
-                        <MenuItem onClick={handleAccountProfile}>
+                        <MenuItem onClick={()=>handleAccountProfile(profileURL)}>
                             <Avatar/> My Profile
                         </MenuItem>
                         <MenuItem>
