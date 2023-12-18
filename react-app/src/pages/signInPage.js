@@ -130,7 +130,7 @@ const SignInPage = () => {
                 <Grid item xs={12}>
                     <Header title={title}/>
                 </Grid>
-                <Grid container justifyContent="center" alignItems="center" sx={{mt: '-110px'}}>
+                <Grid container justifyContent="center" alignItems="center" sx={{mt: '-119px'}}>
                     <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} lg={5} sx={{p: 16,background: 'linear-gradient(180deg, rgba(237,190,210,1) 8%, rgba(176,207,244,1) 95%)'}}>
                         <Typography component="h4" variant="h4" sx={{textAlign: 'center', mt: '-70px'}}>
                             {"Sign In "}
