@@ -102,7 +102,7 @@ const ReviewForm = ({ movie }) => {
 
     const handleSnackClose = (event) => {
         setOpen(false);
-        navigate(`/${user.username}/favorites`);
+        navigate(`/${user.username}/reviews`);
     };
 
     return (

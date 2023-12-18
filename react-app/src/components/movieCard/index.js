@@ -69,7 +69,7 @@ export default function MovieCard({movie, action, avatarCheck}) {
                     </Grid>
                 </Grid>
             </CardContent>
-            <CardActions disableSpacing>
+            <CardActions disableSpacing sx={{mb:2}}>
                 {action(movie)}
                 <Link to={`/movies/${movie.id}`}>
                     <Button variant="outlined" size="medium" color="primary">

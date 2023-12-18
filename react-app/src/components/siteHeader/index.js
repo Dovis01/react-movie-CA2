@@ -74,9 +74,9 @@ const SiteHeader = () => {
     }
 
     const personalIconMapping = {
-        "Favorites": <FavoriteIcon/>,
+        "Favorites": <FavoriteIcon sx={{mt:0.3}}/>,
         "ToWatchList": <SubscriptionsIcon/>,
-        "Reviews": <ReviewsIcon/>,
+        "Reviews": <ReviewsIcon sx={{mt:0.5}}/>,
     };
 
     const handleMenuSelect = (pageURL) => {
