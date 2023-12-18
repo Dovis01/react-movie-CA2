@@ -54,6 +54,10 @@ const styles = {
     submit: {
         marginRight: 2,
     },
+    reset: {
+        marginRight: 2,
+        width: "90px",
+    },
     snack: {
         width: "50%",
         "& > * ": {
@@ -210,6 +214,7 @@ const ReviewForm = ({ movie }) => {
                             value={rating}
                             onChange={handleRatingChange}
                             helperText="Don't forget your rating"
+                            sx={{mt:2}}
                         >
                             {ratings.map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
@@ -220,7 +225,7 @@ const ReviewForm = ({ movie }) => {
                     )}
                 />
 
-                <Box sx={styles.buttons}>
+                <Box sx={{...styles.buttons, mt: 2}}>
                     <Button
                         type="submit"
                         variant="contained"
@@ -233,7 +238,7 @@ const ReviewForm = ({ movie }) => {
                         type="reset"
                         variant="contained"
                         color="secondary"
-                        sx={styles.submit}
+                        sx={styles.reset}
                         onClick={() => {
                             reset({
                                 author: "",

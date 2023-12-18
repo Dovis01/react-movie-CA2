@@ -9,7 +9,7 @@ import Spinner from '../../spinner'
 import backgroundImageStyles from "../../../theme/background";
 
 const wrapperStyle = {
-    position: 'relative', // 父容器相对定位
+    position: 'relative',
 };
 
 const TemplateMoviePage = ({movie, children}) => {
