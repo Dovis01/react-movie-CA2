@@ -5,9 +5,9 @@ import {UsersContext} from "./usersContext";
 export const MoviesContext = React.createContext(null);
 
 const MoviesContextProvider = (props) => {
-    const [favorites, setFavorites] = useState( [] )
-    const [myReviews, setMyReviews] = useState( {} )
-    const [toWatchList, setToWatchList] = useState( [] )
+    const [favorites, setFavorites] = useState([])
+    const [myReviews, setMyReviews] = useState({})
+    const [toWatchList, setToWatchList] = useState([])
     const usersContext = useContext(UsersContext);
     const navigate = useNavigate();
 
@@ -17,56 +17,52 @@ const MoviesContextProvider = (props) => {
         setToWatchList([]);
     }
     const addToFavorites = (movie) => {
-        if(usersContext.user){
+        if (usersContext.user) {
             let newFavorites = [];
-            if (!favorites.includes(movie.id)){
+            if (!favorites.includes(movie.id)) {
                 newFavorites = [...favorites, movie.id];
-            }
-            else{
+            } else {
                 newFavorites = [...favorites];
             }
             setFavorites(newFavorites)
-        }
-        else{
+        } else {
             navigate('/signin');
         }
     };
 
     const addToWatchList = (movie) => {
-        if(usersContext.user){
+        if (usersContext.user) {
             let newWatchList = [];
-            if (!toWatchList.includes(movie.id)){
+            if (!toWatchList.includes(movie.id)) {
                 newWatchList = [...toWatchList, movie.id];
-            }
-            else{
+            } else {
                 newWatchList = [...toWatchList];
             }
             setToWatchList(newWatchList)
-        }
-        else{
+        } else {
             navigate('/signin');
         }
     };
 
     // We will use this function in a later section
     const removeFromFavorites = (movie) => {
-        setFavorites( favorites.filter(
+        setFavorites(favorites.filter(
             (mId) => mId !== movie.id
-        ) )
+        ))
     };
 
     const removeFromWatchList = (movie) => {
-        setToWatchList( toWatchList.filter(
+        setToWatchList(toWatchList.filter(
             (mId) => mId !== movie.id
-        ) )
+        ))
     };
 
     const addReview = (movie, review) => {
-        setMyReviews( {...myReviews, [movie.id]: review } )
+        setMyReviews({...myReviews, [movie.id]: review})
     };
 
     const removeReview = (movie) => {
-        const newReviews = { ...myReviews };
+        const newReviews = {...myReviews};
         delete newReviews[movie.id];
         setMyReviews(newReviews);
     };

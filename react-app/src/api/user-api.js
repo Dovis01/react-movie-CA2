@@ -33,3 +33,22 @@ export const signup = async (user) => {
     });
     return response.json();
 };
+
+/**
+ * User Reviews API
+ * */
+export const getUserMovieReviews = async ({queryKey}) => {
+    const [,paramsPart] = queryKey;
+    const {movieId, username} = paramsPart;
+    const response = await fetch(`http://localhost:8080/api/reviews/${username}/movies/${movieId}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': window.localStorage.getItem('token')
+        },
+        method: 'get',
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
+};

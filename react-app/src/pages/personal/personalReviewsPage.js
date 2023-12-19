@@ -6,14 +6,21 @@ import { getMovie } from "../../api/tmdb-customized-api";
 import Spinner from '../../components/spinner'
 import RemoveFromPersonalReviews from "../../components/cardIconAndAvatar/icons/removeFromPersonalReviews";
 import LookConcreteReview from "../../components/cardIconAndAvatar/icons/lookConcreteReview";
+import {UsersContext} from "../../contexts/usersContext";
 
 const PersonalReviewsPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const {myReviews} = useContext(MoviesContext);
-    const movieIds = Object.keys(myReviews);
+    const {user} = useContext(UsersContext);
+    let movieIds;
+
+    if(user.username==="user1"){
+        movieIds=["897087"]
+    }else{
+        movieIds = Object.keys(myReviews);
+    }
 
     const moviesPerPage = 40;
-
     const indexOfLastMovie = currentPage * moviesPerPage;
     const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
     const currentMoviesIds = movieIds.slice(indexOfFirstMovie, indexOfLastMovie);
