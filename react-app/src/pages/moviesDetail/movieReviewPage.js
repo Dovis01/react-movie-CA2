@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
-import PageTemplate from "../../components/template/templateMoviePage";
+import TemplateMovieReviewsPage from "../../components/template/templateMovieReviewsPage";
 import MovieReview from "../../components/movieReview";
 
 const MovieReviewPage = () => {
@@ -8,9 +8,9 @@ const MovieReviewPage = () => {
     const {movie, review} = location.state;
 
     return (
-        <PageTemplate movie={movie}>
+        <TemplateMovieReviewsPage movie={movie}>
             <MovieReview review={review} />
-        </PageTemplate>
+        </TemplateMovieReviewsPage>
     );
 };
 

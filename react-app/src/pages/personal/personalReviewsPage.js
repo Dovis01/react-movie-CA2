@@ -5,6 +5,7 @@ import { useQueries } from "react-query";
 import { getMovie } from "../../api/tmdb-customized-api";
 import Spinner from '../../components/spinner'
 import RemoveFromPersonalReviews from "../../components/cardIconAndAvatar/icons/removeFromPersonalReviews";
+import LookConcreteReview from "../../components/cardIconAndAvatar/icons/lookConcreteReview";
 
 const PersonalReviewsPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -52,6 +53,7 @@ const PersonalReviewsPage = () => {
                 return (
                     <>
                         <RemoveFromPersonalReviews movie={movie} />
+                        <LookConcreteReview  movie={movie} />
                     </>
                 );
             }}

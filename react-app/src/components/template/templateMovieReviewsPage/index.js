@@ -13,7 +13,7 @@ const wrapperStyle = {
     position: 'relative',
 };
 
-const TemplateMovieReviewFormPage = ({movie, children}) => {
+const TemplateMovieReviewsPage = ({movie, children}) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const {data, error, isLoading, isError} = useQuery(
         ["images", {id: movie.id}],
@@ -46,16 +46,16 @@ const TemplateMovieReviewFormPage = ({movie, children}) => {
                 <MovieHeader movie={movie} sx={{padding: "20px"}}/>
                 <Grid container spacing={5} sx={{padding: "20px"}}>
                     <Grid item xs={3} sx={{
-                        position: 'relative', // Add a relative position to the container
+                        position: 'relative',
                     }}>
                         <Button
                             onClick={prevImage}
                             sx={{
-                                position: 'absolute', // Position the button absolutely
-                                left: 36, // Place it on the left
-                                top: '50%', // Center it vertically
-                                transform: 'translateY(-50%)', // Adjust the position to center vertically
-                                zIndex: 2, // Ensure it's above the image
+                                position: 'absolute',
+                                left: 36,
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                zIndex: 2,
                             }}
                         >
                             <ArrowBackIosIcon color={"action"} sx={{ fontSize: '5rem', color: 'white' }}  />
@@ -65,18 +65,18 @@ const TemplateMovieReviewFormPage = ({movie, children}) => {
                             alt={images[currentImageIndex].file_path}
                             style={{
                                 height: '700px',
-                                width: '100%', // Ensure the image takes the full width of the container
-                                display: 'block', // Display block to remove bottom space
+                                width: '100%',
+                                display: 'block',
                             }}
                         />
                         <Button
                             onClick={nextImage}
                             sx={{
-                                position: 'absolute', // Position the button absolutely
-                                right: -10, // Place it on the right
-                                top: '50%', // Center it vertically
-                                transform: 'translateY(-50%)', // Adjust the position to center vertically
-                                zIndex: 2, // Ensure it's above the image
+                                position: 'absolute',
+                                right: -10,
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                zIndex: 2,
                             }}
                         >
                             <ArrowForwardIosIcon color={"action"} sx={{ fontSize: '5rem', color: 'white' }}  />
@@ -92,4 +92,4 @@ const TemplateMovieReviewFormPage = ({movie, children}) => {
     );
 };
 
-export default TemplateMovieReviewFormPage;
+export default TemplateMovieReviewsPage;

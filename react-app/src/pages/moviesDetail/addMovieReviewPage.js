@@ -1,5 +1,5 @@
 import React from "react";
-import TemplateMovieReviewFormPage from "../../components/template/templateMovieReviewFormPage";
+import TemplateMovieReviewsPage from "../../components/template/templateMovieReviewsPage";
 import ReviewForm from "../../components/reviewForm";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "react-query";
@@ -23,9 +23,9 @@ const WriteReviewPage = () => {
         return <h1>{error.message}</h1>;
     }
     return (
-        <TemplateMovieReviewFormPage movie={movie}>
+        <TemplateMovieReviewsPage movie={movie}>
             <ReviewForm movie={movie} />
-        </TemplateMovieReviewFormPage>
+        </TemplateMovieReviewsPage>
     );
 };
 
