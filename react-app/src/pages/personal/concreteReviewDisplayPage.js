@@ -29,7 +29,7 @@ const ConcreteReviewDisplayPage = () => {
         <TemplateMoviePage movie={movie}>
             {reviews.map((review) => (
                 <Paper elevation={5} sx={{padding: 2.5,mb:1}}>
-                    <MovieReview review={review}/>
+                    <MovieReview review={review} movie={movie}/>
                 </Paper>
             ))}
         </TemplateMoviePage>

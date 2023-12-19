@@ -14,23 +14,23 @@ import {UsersContext} from "../../contexts/usersContext";
 
 const ratings = [
     {
-        value: 4,
+        value: 5,
         label: "Excellent",
     },
     {
-        value: 3,
+        value: 4,
         label: "Good",
     },
     {
-        value: 2,
+        value: 3,
         label: "Average",
     },
     {
-        value: 1,
+        value: 2,
         label: "Poor",
     },
     {
-        value: 0,
+        value: 1,
         label: "Terrible",
     },
 ];
@@ -66,7 +66,7 @@ const styles = {
     },
 };
 
-const ReviewForm = ({ movie }) => {
+const ReviewForm = ({ movie,review }) => {
     const context = useContext(MoviesContext);
     const usersContext = useContext(UsersContext);
     const [rating, setRating] = useState(3);
@@ -150,7 +150,7 @@ const ReviewForm = ({ movie }) => {
                     name="author"
                     control={control}
                     rules={{ required: "Name is required" }}
-                    defaultValue=""
+                    defaultValue={review ? review.author : ""}
                     render={({ field: { onChange, value } }) => (
                         <TextField
                             sx={{ width: "40ch" }}
@@ -178,7 +178,7 @@ const ReviewForm = ({ movie }) => {
                         required: "Review cannot be empty.",
                         minLength: { value: 10, message: "Review is too short" },
                     }}
-                    defaultValue=""
+                    defaultValue={review ? review.content : ""}
                     render={({ field: { onChange, value } }) => (
                         <TextField
                             variant="outlined"
@@ -210,7 +210,7 @@ const ReviewForm = ({ movie }) => {
                             select
                             variant="outlined"
                             label="Rating Select"
-                            value={rating}
+                            value={review ? review.rating : rating}
                             onChange={handleRatingChange}
                             helperText="Don't forget your rating"
                             sx={{mt:2}}

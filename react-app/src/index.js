@@ -29,6 +29,7 @@ import ProtectedRoutes from "./protectedRoutes";
 import AccountProfilePage from "./pages/account/accountProfilePage";
 import PersonalReviewsPage from "./pages/personal/personalReviewsPage";
 import ConcreteReviewDisplayPage from "./pages/personal/concreteReviewDisplayPage";
+import UpdateUserReviewPage from "./pages/personal/updateUserReviewPage";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -63,6 +64,7 @@ const App = () => {
                             <Route path="/movies/:id/related_actors" element={<MovieRelatedPeoplePage/>}/>
                             <Route element={<ProtectedRoutes/>}>
                                 <Route path="/:username/movies/:id/reviews" element={<ConcreteReviewDisplayPage/>}/>
+                                <Route path="/:username/movies/:id/reviews/:id/update_form" element={<UpdateUserReviewPage/>}/>
                                 <Route path="/reviews/form" element={<AddMovieReviewPage/>}/>
                                 <Route path="/:username/favorites" element={<FavoriteMoviesPage/>}/>
                                 <Route path="/:username/towatchlist" element={<ToWatchMoviesListPage/>}/>
