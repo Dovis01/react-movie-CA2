@@ -13,7 +13,7 @@ const  reviews = [
             {
                 review: {
                     author: "reviewer2",
-                    rating: 5,
+                    rating: 1,
                     content: "Cool, but not as cool as the first one"
                 }
             },

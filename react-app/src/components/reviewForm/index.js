@@ -14,19 +14,19 @@ import {UsersContext} from "../../contexts/usersContext";
 
 const ratings = [
     {
-        value: 5,
+        value: 4,
         label: "Excellent",
     },
     {
-        value: 4,
+        value: 3,
         label: "Good",
     },
     {
-        value: 3,
+        value: 2,
         label: "Average",
     },
     {
-        value: 2,
+        value: 1,
         label: "Poor",
     },
     {
@@ -95,7 +95,6 @@ const ReviewForm = ({ movie }) => {
     const onSubmit = (review) => {
         review.movieId = movie.id;
         review.rating = rating;
-        console.log(review);
         context.addReview(movie, review);
         setOpen(true); // NEW
     };
