@@ -15,9 +15,7 @@ import {UsersContext} from "../contexts/usersContext";
 import {InputAdornment, Slide} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
-import {getMovie, getMovieInSignIn} from "../api/tmdb-customized-api";
-import {useQuery} from "react-query";
-import Spinner from "../components/spinner";
+import {getMovieInSignIn} from "../api/tmdb-customized-api";
 
 
 const SignInPage = () => {
