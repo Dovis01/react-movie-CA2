@@ -15,7 +15,9 @@ import {UsersContext} from "../contexts/usersContext";
 import {InputAdornment, Slide} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
-
+import {getMovie, getMovieInSignIn} from "../api/tmdb-customized-api";
+import {useQuery} from "react-query";
+import Spinner from "../components/spinner";
 
 
 const SignInPage = () => {
@@ -79,8 +81,9 @@ const SignInPage = () => {
         navigate(pageURL);
     };
 
-    const handleSnackClose = (event) => {
+    const handleSnackClose = async (event) => {
         if (usersContext.isAuthenticated === true) {
+            const match = from.match(/\/(\w+)\/movies\/(\d+)\/reviews/);
             if(from ==="/reviews/form" && !location.state?.from.state?.movieId){
                 navigate(`/${usersContext.user.username}/favorites`);
                 setOpenSnackbar(false);
@@ -88,6 +91,14 @@ const SignInPage = () => {
             }
             if(from ==="/reviews/form" && location.state.from.state.movieId){
                 navigate(from,{state: {movieId: location.state.from.state.movieId}});
+                setOpenSnackbar(false);
+                return;
+            }
+            if(match){
+                const user={username:match[1]};
+                const movieId=match[2];
+                const movie = await getMovieInSignIn(movieId);
+                navigate(from,{state: {user:user,movie:movie}});
                 setOpenSnackbar(false);
                 return;
             }

@@ -95,6 +95,19 @@ export const getMovie = async (args) => {
     return response.json();
 };
 
+export const getMovieInSignIn = async (id) => {
+    const response = await fetch(`http://localhost:8080/api/movies/tmdb/${id}`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        method: 'get',
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
+};
+
 export const getGenres = async () => {
     const response = await fetch(`http://localhost:8080/api/movies/tmdb/genres`, {
         headers: {
