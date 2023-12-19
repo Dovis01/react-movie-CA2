@@ -16,6 +16,7 @@ import {InputAdornment, Slide} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {getMovieInSignIn} from "../api/tmdb-customized-api";
+import {getUserMovieSpecificReview} from "../api/user-api";
 
 
 const SignInPage = () => {
@@ -81,7 +82,8 @@ const SignInPage = () => {
 
     const handleSnackClose = async (event) => {
         if (usersContext.isAuthenticated === true) {
-            const match = from.match(/\/(\w+)\/movies\/(\d+)\/reviews/);
+            const matchReviews = from.match(/\/(\w+)\/movies\/(\d+)\/reviews/);
+            const matchUpdateReview = from.match(/\/(\w+)\/movies\/(\d+)\/reviews\/([a-zA-Z0-9]+)\/update_form/);
             if(from ==="/reviews/form" && !location.state?.from.state?.movieId){
                 navigate(`/${usersContext.user.username}/favorites`);
                 setOpenSnackbar(false);
@@ -92,9 +94,20 @@ const SignInPage = () => {
                 setOpenSnackbar(false);
                 return;
             }
-            if(match){
-                const user={username:match[1]};
-                const movieId=match[2];
+            if(matchUpdateReview){
+                const username=matchUpdateReview[1];
+                const movieId=matchUpdateReview[2];
+                const reviewId=matchUpdateReview[3];
+                const result = await getUserMovieSpecificReview(username,movieId,reviewId);
+                const review=result.reviews[0];
+                const movie = await getMovieInSignIn(movieId);
+                navigate(from,{state: {movie:movie,review:review}});
+                setOpenSnackbar(false);
+                return;
+            }
+            if(matchReviews){
+                const user={username:matchReviews[1]};
+                const movieId=matchReviews[2];
                 const movie = await getMovieInSignIn(movieId);
                 navigate(from,{state: {user:user,movie:movie}});
                 setOpenSnackbar(false);

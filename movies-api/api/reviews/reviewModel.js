@@ -16,4 +16,14 @@ ReviewSchema.statics.findByUserNameAndMovieId = function (username, movieId) {
     return this.findOne({username: username, movieId: movieId});
 };
 
+ReviewSchema.statics.findByUserNameMovieIdAndReviewId = function (username, movieId,reviewId) {
+    return this.findOne({
+        username: username,
+        movieId: movieId,
+        'reviews._id': reviewId
+    }, {
+        'reviews.$': 1
+    });
+};
+
 export default mongoose.model('Review', ReviewSchema);

@@ -52,3 +52,17 @@ export const getUserMovieReviews = async ({queryKey}) => {
     }
     return response.json();
 };
+
+export const getUserMovieSpecificReview = async (username,movieId,reviewId) => {
+    const response = await fetch(`http://localhost:8080/api/reviews/${reviewId}/${username}/movies/${movieId}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': window.localStorage.getItem('token')
+        },
+        method: 'get',
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
+};

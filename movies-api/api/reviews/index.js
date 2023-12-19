@@ -25,7 +25,7 @@ router.get('/', asyncHandler(async (req, res) => {
     res.status(200).json(returnObject);
 }));
 
-// Get movie details
+
 router.get('/:username/movies/:movieId', asyncHandler(async (req, res) => {
     const movieId = parseInt(req.params.movieId);
     const username = req.params.username;
@@ -34,6 +34,18 @@ router.get('/:username/movies/:movieId', asyncHandler(async (req, res) => {
         res.status(200).json(reviews);
     } else {
         res.status(404).json({message: 'The reviews you requested could not be found.', status_code: 404});
+    }
+}));
+
+router.get('/:reviewId/:username/movies/:movieId', asyncHandler(async (req, res) => {
+    const reviewId = req.params.reviewId;
+    const movieId = parseInt(req.params.movieId);
+    const username = req.params.username;
+    const review = await reviewModel.findByUserNameMovieIdAndReviewId(username,movieId,reviewId);
+    if (review) {
+        res.status(200).json(review);
+    } else {
+        res.status(404).json({message: 'The review you requested could not be found.', status_code: 404});
     }
 }));
 
