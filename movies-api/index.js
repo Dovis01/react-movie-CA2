@@ -5,6 +5,7 @@ import moviesRouter from './api/movies';
 import peopleRouter from './api/people';
 import reviewsRouter from './api/reviews';
 import favoritesRouter from './api/favorites';
+import toWatchListRouter from './api/toWatchList';
 import usersRouter from './api/users';
 import cors from 'cors';
 import './db';
@@ -22,6 +23,7 @@ app.use('/api/movies',  moviesRouter);
 app.use('/api/people',  peopleRouter);
 app.use('/api/reviews', authenticate,  reviewsRouter);
 app.use('/api/favorites', authenticate,  favoritesRouter);
+app.use('/api/toWatchList', authenticate,  toWatchListRouter);
 app.use(defaultErrHandler);
 
 app.listen(port, () => {

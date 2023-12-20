@@ -169,3 +169,48 @@ export const deleteUserFavorite = async (username, movieId) => {
     }
     return response.json();
 }
+
+/**
+ * User To Watch List API
+ * */
+export const getUserToWatchList = async (username) => {
+    const response = await fetch(`http://localhost:8080/api/toWatchList/${username}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': window.localStorage.getItem('token')
+        },
+        method: 'get',
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
+}
+
+export const addUserToWatchList = async (username, movieId) => {
+    const response = await fetch(`http://localhost:8080/api/toWatchList/${username}/movies/${movieId}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': window.localStorage.getItem('token')
+        },
+        method: 'post',
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
+}
+
+export const deleteUserToWatchList = async (username, movieId) => {
+    const response = await fetch(`http://localhost:8080/api/toWatchList/${username}/movies/${movieId}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': window.localStorage.getItem('token')
+        },
+        method: 'delete',
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
+}

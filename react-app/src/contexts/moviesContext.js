@@ -3,10 +3,10 @@ import {useNavigate} from "react-router-dom";
 import {UsersContext} from "./usersContext";
 import {
     addUserFavorite,
-    addUserMovieSpecificReview, deleteUserFavorite,
-    deleteUserMovieSpecificReview,
+    addUserMovieSpecificReview, addUserToWatchList, deleteUserFavorite,
+    deleteUserMovieSpecificReview, deleteUserToWatchList,
     getAllReviewedMoviesByUser, getUserFavorites,
-    getUserMovieReviews, updateUserMovieSpecificReview
+    getUserMovieReviews, getUserToWatchList, updateUserMovieSpecificReview
 } from "../api/user-api";
 
 export const MoviesContext = React.createContext(null);
@@ -23,8 +23,10 @@ const MoviesContextProvider = (props) => {
             if (usersContext.isAuthenticated && usersContext.user?.username) {
                 const favoritesDoc = await getUserFavorites(usersContext.user.username);
                 const movieIds = await getAllReviewedMoviesByUser(usersContext.user.username);
+                const toWatchListDoc = await getUserToWatchList(usersContext.user.username);
                 setFavorites(favoritesDoc.favorites);
                 setMyReviewedMovieIds(movieIds);
+                setToWatchList(toWatchListDoc.toWatchList);
             }
         };
         initiateAllPersonalData();
@@ -50,7 +52,7 @@ const MoviesContextProvider = (props) => {
         }
     };
 
-    const addToWatchList = (movie) => {
+    const addToWatchList = async (movie) => {
         if (usersContext.user) {
             let newWatchList = [];
             if (!toWatchList.includes(movie.id)) {
@@ -59,6 +61,7 @@ const MoviesContextProvider = (props) => {
                 newWatchList = [...toWatchList];
             }
             setToWatchList(newWatchList)
+            await addUserToWatchList(usersContext.user.username, movie.id);
         } else {
             navigate('/signin');
         }
@@ -72,10 +75,11 @@ const MoviesContextProvider = (props) => {
         await deleteUserFavorite(usersContext.user.username, movie.id);
     };
 
-    const removeFromWatchList = (movie) => {
+    const removeFromWatchList = async (movie) => {
         setToWatchList(toWatchList.filter(
             (mId) => mId !== movie.id
         ))
+        await deleteUserToWatchList(usersContext.user.username, movie.id);
     };
 
     const addReview = async (movie, review) => {
