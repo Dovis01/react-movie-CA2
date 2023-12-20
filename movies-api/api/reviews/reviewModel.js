@@ -12,6 +12,10 @@ const ReviewSchema = new Schema({
     }],
 });
 
+ReviewSchema.statics.findByUserName = function (username) {
+    return this.find({ username: username }).then(docs => docs.map(doc => doc.movieId));
+};
+
 ReviewSchema.statics.findByUserNameAndMovieId = function (username, movieId) {
     return this.findOne({username: username, movieId: movieId});
 };

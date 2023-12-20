@@ -1,19 +1,35 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {UsersContext} from "./usersContext";
+import {
+    addUserMovieSpecificReview,
+    deleteUserMovieSpecificReview,
+    getAllReviewedMoviesByUser,
+    getUserMovieReviews, updateUserMovieSpecificReview
+} from "../api/user-api";
 
 export const MoviesContext = React.createContext(null);
 
 const MoviesContextProvider = (props) => {
-    const [favorites, setFavorites] = useState([])
-    const [myReviews, setMyReviews] = useState({})
-    const [toWatchList, setToWatchList] = useState([])
     const usersContext = useContext(UsersContext);
+    const [favorites, setFavorites] = useState([])
+    const [myReviewedMovieIds, setMyReviewedMovieIds] = useState([])
+    const [toWatchList, setToWatchList] = useState([])
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const initiateReviewedMovieIds = async () => {
+            if (usersContext.isAuthenticated && usersContext.user?.username) {
+                const movieIds = await getAllReviewedMoviesByUser(usersContext.user.username);
+                setMyReviewedMovieIds(movieIds);
+            }
+        };
+        initiateReviewedMovieIds();
+    }, [usersContext.isAuthenticated, usersContext.user?.username]);
 
     const clearPersonalData = () => {
         setFavorites([]);
-        setMyReviews({});
+        setMyReviewedMovieIds([]);
         setToWatchList([]);
     }
     const addToFavorites = (movie) => {
@@ -57,27 +73,45 @@ const MoviesContextProvider = (props) => {
         ))
     };
 
-    const addReview = (movie, review) => {
-        setMyReviews({...myReviews, [movie.id]: review})
+    const addReview = async (movie, review) => {
+        const username = usersContext.user.username;
+        if (!myReviewedMovieIds.includes(movie.id)) {
+            setMyReviewedMovieIds([...myReviewedMovieIds, movie.id]);
+        }
+        await addUserMovieSpecificReview(username, movie.id, review);
     };
 
-    const removeReview = (movie) => {
-        const newReviews = {...myReviews};
-        delete newReviews[movie.id];
-        setMyReviews(newReviews);
+    const updateReview = async (username, movie, review, originalReviewId) => {
+        await updateUserMovieSpecificReview(username, movie.id, review, originalReviewId);
+    };
+
+    const removeReview = async (username, movie, review) => {
+        const reviews = await getUserMovieReviews({
+            queryKey: [
+                "userConcreteReviews",
+                {movieId: movie.id, username: usersContext.user.username}]
+        });
+        const reviewsNum = reviews.reviews.length;
+        if (reviewsNum === 1) {
+            const newReviewedMovieIds = myReviewedMovieIds.filter(movieId => movieId !== movie.id);
+            setMyReviewedMovieIds(newReviewedMovieIds);
+            navigate(`/${usersContext.user.username}/reviews`);
+        }
+        await deleteUserMovieSpecificReview(username, movie.id, review._id);
     };
 
 
     return (
         <MoviesContext.Provider
             value={{
-                myReviews,
+                myReviewedMovieIds,
                 favorites,
                 toWatchList,
                 addToFavorites,
                 removeFromFavorites,
                 removeFromWatchList,
                 addReview,
+                updateReview,
                 removeReview,
                 addToWatchList,
                 clearPersonalData,

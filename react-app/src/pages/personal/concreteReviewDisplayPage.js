@@ -12,7 +12,10 @@ const ConcreteReviewDisplayPage = () => {
     const {user, movie} = location.state;
     const { data, error, isLoading, isError } = useQuery(
         ["userConcreteReviews", { movieId: movie.id , username: user.username}],
-        getUserMovieReviews
+        getUserMovieReviews,
+        {
+            refetchInterval: 120
+        }
     );
 
     if (isLoading) {

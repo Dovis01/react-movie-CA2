@@ -1,25 +1,17 @@
 import React, {useContext, useState} from "react";
 import PageTemplate from "../../components/template/templateMovieListPage";
-import { MoviesContext } from "../../contexts/moviesContext";
-import { useQueries } from "react-query";
-import { getMovie } from "../../api/tmdb-customized-api";
+import {MoviesContext} from "../../contexts/moviesContext";
+import {useQueries} from "react-query";
+import {getMovie} from "../../api/tmdb-customized-api";
 import Spinner from '../../components/spinner'
 import RemoveFromPersonalReviews from "../../components/cardIconAndAvatar/icons/removeFromPersonalReviews";
 import LookConcreteReview from "../../components/cardIconAndAvatar/icons/lookConcreteReview";
-import {UsersContext} from "../../contexts/usersContext";
 
-const PersonalReviewsPage = () => {
+const PersonalReviewsPage =  () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const {myReviews} = useContext(MoviesContext);
-    const {user} = useContext(UsersContext);
-    let movieIds;
-
-    if(user.username==="user1"){
-        movieIds=["897087"]
-    }else{
-        movieIds = Object.keys(myReviews);
-    }
-
+    const moviesContext = useContext(MoviesContext);
+    const movieIds = moviesContext.myReviewedMovieIds;
+    console.log(movieIds)
     const moviesPerPage = 40;
     const indexOfLastMovie = currentPage * moviesPerPage;
     const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
@@ -30,7 +22,7 @@ const PersonalReviewsPage = () => {
     const MovieReviewedQueries = useQueries(
         currentMoviesIds.map((movieId) => {
             return {
-                queryKey: ["movie", { id: movieId }],
+                queryKey: ["movie", {id: movieId}],
                 queryFn: getMovie,
             };
         })
@@ -39,7 +31,7 @@ const PersonalReviewsPage = () => {
     const isLoading = MovieReviewedQueries.find((m) => m.isLoading === true);
 
     if (isLoading) {
-        return <Spinner />;
+        return <Spinner/>;
     }
     //提取了流派ID为Movie一个单独的数组属性
     const movies = MovieReviewedQueries.map((q) => {
@@ -59,12 +51,13 @@ const PersonalReviewsPage = () => {
             action={(movie) => {
                 return (
                     <>
-                        <RemoveFromPersonalReviews movie={movie} />
-                        <LookConcreteReview  movie={movie} />
+                        <RemoveFromPersonalReviews movie={movie}/>
+                        <LookConcreteReview movie={movie}/>
                     </>
                 );
             }}
-            avatarCheck={() => {}}
+            avatarCheck={() => {
+            }}
         />
     );
 };

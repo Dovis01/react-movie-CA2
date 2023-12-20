@@ -4,9 +4,11 @@ import {Button, Divider} from "@mui/material";
 import Box from "@mui/material/Box";
 import {useNavigate} from "react-router-dom";
 import {UsersContext} from "../../contexts/usersContext";
+import {MoviesContext} from "../../contexts/moviesContext";
 
 const MovieReview = ({review,movie}) => {
     const usersContext = useContext(UsersContext);
+    const moviesContext = useContext(MoviesContext);
     const user=usersContext.user;
     const ratings = ["Terrible", "Poor", "Average", "Good", "Excellent"];
     const navigate = useNavigate();
@@ -14,8 +16,8 @@ const MovieReview = ({review,movie}) => {
         navigate(`/${user.username}/movies/${movie.id}/reviews/${review._id}/update_form`, {state: {review: review,movie: movie}});
     }
 
-    const handleDeleteReview = () => {
-        navigate(`/reviews/delete/${review.id}`, {state: {review: review}});
+    const handleDeleteReview = async () => {
+       await moviesContext.removeReview(usersContext.user.username,movie,review)
     }
 
     return (
@@ -26,10 +28,11 @@ const MovieReview = ({review,movie}) => {
                 </Typography>
                 {review.rating && (
                     <>
-                        <Typography variant="h5" component="h3" fontWeight="bold"
-                                    sx={{ml: 92.6, textAlign: 'right'}}>
-                            Rating: {ratings[review.rating-1]}
-                        </Typography>
+                        <Box flexGrow={1} display="flex" justifyContent="flex-end" marginRight={2}>
+                            <Typography variant="h5" component="h3" fontWeight="bold">
+                                Rating: {ratings[review.rating-1]}
+                            </Typography>
+                        </Box>
                         <Box display="flex" alignItems="center" gap={0.4} ml="auto">
                             <Button variant="contained" color="primary" onClick={handleUpdateReview}>
                                 Update

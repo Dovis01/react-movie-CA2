@@ -53,6 +53,20 @@ export const getUserMovieReviews = async ({queryKey}) => {
     return response.json();
 };
 
+export const getAllReviewedMoviesByUser = async (username) => {
+    const response = await fetch(`http://localhost:8080/api/reviews/${username}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': window.localStorage.getItem('token')
+        },
+        method: 'get',
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
+};
+
 export const getUserMovieSpecificReview = async (username,movieId,reviewId) => {
     const response = await fetch(`http://localhost:8080/api/reviews/${reviewId}/${username}/movies/${movieId}`, {
         headers: {
@@ -60,6 +74,50 @@ export const getUserMovieSpecificReview = async (username,movieId,reviewId) => {
             'Authorization': window.localStorage.getItem('token')
         },
         method: 'get',
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
+};
+
+export const addUserMovieSpecificReview = async (username,movieId,review) => {
+    const response = await fetch(`http://localhost:8080/api/reviews/${username}/movies/${movieId}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': window.localStorage.getItem('token')
+        },
+        method: 'post',
+        body: JSON.stringify({ author: review.author, rating:review.rating, content: review.review })
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
+};
+
+export const updateUserMovieSpecificReview = async (username,movieId,review,originalReviewId) => {
+    const response = await fetch(`http://localhost:8080/api/reviews/${originalReviewId}/${username}/movies/${movieId}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': window.localStorage.getItem('token')
+        },
+        method: 'put',
+        body: JSON.stringify({ author: review.author, rating:review.rating, content: review.review })
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
+};
+
+export const deleteUserMovieSpecificReview = async (username,movieId,reviewId) => {
+    const response = await fetch(`http://localhost:8080/api/reviews/${reviewId}/${username}/movies/${movieId}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': window.localStorage.getItem('token')
+        },
+        method: 'delete',
     });
     if (!response.ok) {
         throw new Error(response.json().message);

@@ -67,12 +67,13 @@ const styles = {
 };
 
 const ReviewForm = ({ movie,review }) => {
-    const context = useContext(MoviesContext);
+    const moviesContext = useContext(MoviesContext);
     const usersContext = useContext(UsersContext);
     const [rating, setRating] = useState(3);
     const user = usersContext.user;
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
+    const originalReview = review ? review : null;
 
     const defaultValues = {
         author: "",
@@ -92,10 +93,14 @@ const ReviewForm = ({ movie,review }) => {
         setRating(event.target.value);
     };
 
-    const onSubmit = (review) => {
+    const onSubmit = async (review) => {
         review.movieId = movie.id;
         review.rating = rating;
-        context.addReview(movie, review);
+        if(originalReview){
+            await moviesContext.updateReview(user.username,movie,review,originalReview._id);
+        }else{
+            await moviesContext.addReview(movie, review);
+        }
         setOpen(true); // NEW
     };
 
