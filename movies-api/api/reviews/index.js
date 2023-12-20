@@ -211,7 +211,7 @@ async function deleteReview(movieId, username, reviewId, req, res) {
         };
 
         const deletedReviews = await Review.findOneAndUpdate(
-            {username: username, movieId: movieId},
+            {username: username, movieId: movieId, 'reviews._id': reviewId},
             deleteReview,
             {new: true}
         );
