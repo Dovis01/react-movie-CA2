@@ -82,6 +82,7 @@ const SignInPage = () => {
 
     const handleSnackClose = async (event) => {
         if (usersContext.isAuthenticated === true) {
+            const currentUsername = usersContext.user.username;
             const matchReviews = from.match(/\/(\w+)\/movies\/(\d+)\/reviews/);
             const matchUpdateReview = from.match(/\/(\w+)\/movies\/(\d+)\/reviews\/([a-zA-Z0-9]+)\/update_form/);
             if(from ==="/reviews/form" && !location.state?.from.state?.movieId){
@@ -94,7 +95,7 @@ const SignInPage = () => {
                 setOpenSnackbar(false);
                 return;
             }
-            if(matchUpdateReview){
+            if(matchUpdateReview && matchUpdateReview[1] === currentUsername){
                 const username=matchUpdateReview[1];
                 const movieId=matchUpdateReview[2];
                 const reviewId=matchUpdateReview[3];
@@ -105,11 +106,21 @@ const SignInPage = () => {
                 setOpenSnackbar(false);
                 return;
             }
-            if(matchReviews){
+            if(matchUpdateReview && matchUpdateReview[1] !== currentUsername){
+                navigate(`/${currentUsername}/reviews`);
+                setOpenSnackbar(false);
+                return;
+            }
+            if(matchReviews && matchReviews[1] === currentUsername){
                 const user={username:matchReviews[1]};
                 const movieId=matchReviews[2];
                 const movie = await getMovieInSignIn(movieId);
                 navigate(from,{state: {user:user,movie:movie}});
+                setOpenSnackbar(false);
+                return;
+            }
+            if(matchReviews && matchReviews[1] !== currentUsername){
+                navigate(`/${currentUsername}/reviews`);
                 setOpenSnackbar(false);
                 return;
             }
