@@ -10,9 +10,7 @@ import WriteReview from "../../components/cardIconAndAvatar/icons/writeReview";
 const FavoriteMoviesPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const {favorites: movieIds } = useContext(MoviesContext);
-
     const moviesPerPage = 40;
-
     const indexOfLastMovie = currentPage * moviesPerPage;
     const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
     const currentMoviesIds = movieIds.slice(indexOfFirstMovie, indexOfLastMovie);

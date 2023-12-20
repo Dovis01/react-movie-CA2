@@ -124,3 +124,48 @@ export const deleteUserMovieSpecificReview = async (username,movieId,reviewId) =
     }
     return response.json();
 };
+
+/**
+ * User Favorites API
+ * */
+export const getUserFavorites = async (username) => {
+    const response = await fetch(`http://localhost:8080/api/favorites/${username}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': window.localStorage.getItem('token')
+        },
+        method: 'get',
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
+}
+
+export const addUserFavorite = async (username, movieId) => {
+    const response = await fetch(`http://localhost:8080/api/favorites/${username}/movies/${movieId}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': window.localStorage.getItem('token')
+        },
+        method: 'post',
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
+}
+
+export const deleteUserFavorite = async (username, movieId) => {
+    const response = await fetch(`http://localhost:8080/api/favorites/${username}/movies/${movieId}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': window.localStorage.getItem('token')
+        },
+        method: 'delete',
+    });
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return response.json();
+}

@@ -2,9 +2,10 @@ import React, {useContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {UsersContext} from "./usersContext";
 import {
-    addUserMovieSpecificReview,
+    addUserFavorite,
+    addUserMovieSpecificReview, deleteUserFavorite,
     deleteUserMovieSpecificReview,
-    getAllReviewedMoviesByUser,
+    getAllReviewedMoviesByUser, getUserFavorites,
     getUserMovieReviews, updateUserMovieSpecificReview
 } from "../api/user-api";
 
@@ -18,13 +19,15 @@ const MoviesContextProvider = (props) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const initiateReviewedMovieIds = async () => {
+        const initiateAllPersonalData = async () => {
             if (usersContext.isAuthenticated && usersContext.user?.username) {
+                const favoritesDoc = await getUserFavorites(usersContext.user.username);
                 const movieIds = await getAllReviewedMoviesByUser(usersContext.user.username);
+                setFavorites(favoritesDoc.favorites);
                 setMyReviewedMovieIds(movieIds);
             }
         };
-        initiateReviewedMovieIds();
+        initiateAllPersonalData();
     }, [usersContext.isAuthenticated, usersContext.user?.username]);
 
     const clearPersonalData = () => {
@@ -32,7 +35,7 @@ const MoviesContextProvider = (props) => {
         setMyReviewedMovieIds([]);
         setToWatchList([]);
     }
-    const addToFavorites = (movie) => {
+    const addToFavorites = async (movie) => {
         if (usersContext.user) {
             let newFavorites = [];
             if (!favorites.includes(movie.id)) {
@@ -41,6 +44,7 @@ const MoviesContextProvider = (props) => {
                 newFavorites = [...favorites];
             }
             setFavorites(newFavorites)
+            await addUserFavorite(usersContext.user.username, movie.id);
         } else {
             navigate('/signin');
         }
@@ -61,10 +65,11 @@ const MoviesContextProvider = (props) => {
     };
 
     // We will use this function in a later section
-    const removeFromFavorites = (movie) => {
+    const removeFromFavorites = async (movie) => {
         setFavorites(favorites.filter(
             (mId) => mId !== movie.id
         ))
+        await deleteUserFavorite(usersContext.user.username, movie.id);
     };
 
     const removeFromWatchList = (movie) => {
