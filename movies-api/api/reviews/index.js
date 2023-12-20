@@ -1,6 +1,5 @@
 import reviewModel from './reviewModel';
 import asyncHandler from 'express-async-handler';
-import Review from './reviewModel';
 import express from 'express';
 
 const router = express.Router();
@@ -129,7 +128,7 @@ async function firstInsertNewReview(movieId, username, req, res) {
                 content: req.body.content
             }]
         };
-        const reviewsDoc = await Review.create(newReview);
+        const reviewsDoc = await reviewModel.create(newReview);
         res.status(200).json({success: true, msg: 'The first review is added successfully.', result: reviewsDoc});
     } catch (error) {
         console.error(error);
@@ -149,7 +148,7 @@ async function insertNewReview(movieId, username, req, res) {
             }
         };
 
-        const insertedReviews = await Review.findOneAndUpdate(
+        const insertedReviews = await reviewModel.findOneAndUpdate(
             {username: username, movieId: movieId},
             insert,
             {new: true}
@@ -179,7 +178,7 @@ async function updateReview(movieId, username, reviewId, req, res) {
             }
         };
 
-        const updatedReviews = await Review.findOneAndUpdate(
+        const updatedReviews = await reviewModel.findOneAndUpdate(
             {username: username, movieId: movieId, 'reviews._id': reviewId},
             update,
             {new: true}
@@ -210,7 +209,7 @@ async function deleteReview(movieId, username, reviewId, req, res) {
             }
         };
 
-        const deletedReviews = await Review.findOneAndUpdate(
+        const deletedReviews = await reviewModel.findOneAndUpdate(
             {username: username, movieId: movieId, 'reviews._id': reviewId},
             deleteReview,
             {new: true}
@@ -218,7 +217,7 @@ async function deleteReview(movieId, username, reviewId, req, res) {
 
         if (deletedReviews) {
             if (deletedReviews.reviews.length === 0) {
-                await Review.deleteOne({ username: username, movieId: movieId });
+                await reviewModel.deleteOne({ username: username, movieId: movieId });
                 res.status(200).json({ success: true, msg: 'The review is deleted and no more reviews left, so the entire document is deleted.', code: 200 });
             } else {
                 res.status(200).json({ success: true, msg: 'The review is deleted successfully.', result: deletedReviews });
