@@ -20,6 +20,9 @@ import {MoviesContext} from "../../contexts/moviesContext";
 import {deleteUser, updateUser} from "../../api/user-api";
 import MuiAlert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
+import SomeFavoritesDisplay from "./accountProfileCompents/someFavoritesDisplay";
+import SomeReviewedMoviesDisplay from "./accountProfileCompents/someReviewedMoviesDisplay";
+import SomeToWatchlistDisplay from "./accountProfileCompents/someToWatchListDisplay";
 
 const AccountProfilePage = () => {
     const location = useLocation();
@@ -411,13 +414,13 @@ const AccountProfilePage = () => {
                                 <AccountSetting/>
                             </TabPanel>
                             <TabPanel value={value} index={1}>
-                                Some Favorite Movies
+                                <SomeFavoritesDisplay/>
                             </TabPanel>
                             <TabPanel value={value} index={2}>
-                                Some Movies to watch
+                                <SomeToWatchlistDisplay/>
                             </TabPanel>
                             <TabPanel value={value} index={3}>
-                                Some Reviewed Movies
+                                <SomeReviewedMoviesDisplay />
                             </TabPanel>
                         </Paper>
                     </Grid>
