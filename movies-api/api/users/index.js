@@ -6,23 +6,29 @@ import asyncHandler from "express-async-handler";
 const router = express.Router(); // eslint-disable-line
 
 // Get all users
-router.get('/', async (req, res) => {
+router.get('/', asyncHandler(async (req, res) => {
     const users = await User.find();
     res.status(200).json(users);
-});
+}));
+
+router.get('/:username', asyncHandler(async (req, res) => {
+    const user = await User.findOne({username: req.params.username});
+    if(!user) return res.status(404).json({success: false, msg: 'User not found.', code: 404})
+    res.status(200).json(user);
+}));
 
 // register(Create)/Authenticate User
 router.post('/', asyncHandler(async (req, res) => {
     try {
         if (req.query.authMethod === 'username') {
             if (!req.body.username || !req.body.password) {
-                return res.status(400).json({success: false, msg: 'Username and password are required.'});
+                return res.status(400).json({success: false, msg: 'Username and password are required.', code: 400});
             }
             await authenticateUserByUsername(req, res);
         }
         if (req.query.authMethod === 'email') {
             if (!req.body.email || !req.body.password) {
-                return res.status(400).json({success: false, msg: 'Email and password are required.'});
+                return res.status(400).json({success: false, msg: 'Email and password are required.', code: 400});
             }
             await authenticateUserByEmail(req, res);
         }
@@ -36,19 +42,10 @@ router.post('/', asyncHandler(async (req, res) => {
     }
 }));
 
-// Update a user
-router.put('/:id', async (req, res) => {
-    if (req.body._id) delete req.body._id;
-    const result = await User.updateOne({
-        _id: req.params.id,
-    }, req.body);
-    if (result.matchedCount) {
-        res.status(200).json({code: 200, msg: 'User Updated Successfully'});
-    } else {
-        res.status(404).json({code: 404, msg: 'Unable to Update User'});
-    }
-});
 
+/**
+ * Post Functions
+ * */
 async function registerUser(req, res) {
     let userUsername = await User.findByUserName(req.body.username);
     let userEmail = await User.findByEmail(req.body.email);
@@ -66,7 +63,10 @@ async function registerUser(req, res) {
 async function authenticateUserByUsername(req, res) {
     const user = await User.findByUserName(req.body.username);
     if (!user) {
-        return res.status(401).json({success: false, msg: 'Authentication failed. User not found. Please check your username.'});
+        return res.status(401).json({
+            success: false,
+            msg: 'Authentication failed. User not found. Please check your username.'
+        });
     }
 
     const isMatch = await user.comparePassword(req.body.password);
@@ -81,7 +81,10 @@ async function authenticateUserByUsername(req, res) {
 async function authenticateUserByEmail(req, res) {
     const user = await User.findByEmail(req.body.email);
     if (!user) {
-        return res.status(401).json({success: false, msg: 'Authentication failed. User not found. Please check your email.'});
+        return res.status(401).json({
+            success: false,
+            msg: 'Authentication failed. User not found. Please check your email.'
+        });
     }
 
     const isMatch = await user.comparePassword(req.body.password);
