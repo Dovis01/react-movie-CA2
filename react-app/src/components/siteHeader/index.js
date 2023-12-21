@@ -142,10 +142,10 @@ const SiteHeader = () => {
                                 height: 32,
                                 fontSize: '1.1rem',
                             }}
+                            alt={user.username.substring(0, 1)}
+                            src={moviesContext.userAvatar}
                             onClick={(event) => handleUserMenu(event)}
-                        >
-                            { user.username.substring(0, 1) }
-                        </Avatar>
+                        />
                     </Tooltip>
                     <Menu
                         id="menu-appuserbar"

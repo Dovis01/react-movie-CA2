@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import backgroundImageStyles from "../../theme/background";
 import Grid from "@mui/material/Grid";
 import Header from "../../components/headerMovieList";
@@ -6,7 +6,7 @@ import {useLocation} from "react-router-dom";
 import PropTypes from 'prop-types';
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {Button, InputAdornment, Stack, Tab, Tabs} from "@mui/material";
+import {Button, InputAdornment, Slide, Stack, Tab, Tabs} from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import AccountSetting from "./accountProfileCompents/accountSetting";
 import Paper from "@mui/material/Paper";
@@ -16,15 +16,24 @@ import Toolbar from "@mui/material/Toolbar";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
+import {MoviesContext} from "../../contexts/moviesContext";
+import {deleteUser, updateUser} from "../../api/user-api";
+import MuiAlert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 
 const AccountProfilePage = () => {
     const location = useLocation();
+    const moviesContext = useContext(MoviesContext);
     const originalUser = location.state.user;
-    const [showResetPassword, setShowResetPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const userAvatar= moviesContext.userAvatar;
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState('');
     const [value, setValue] = useState(0);
     const [updatedUser, setUpdatedUser] = useState(originalUser);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackMessage, setSnackMessage] = useState('');
+    const [severity, setSeverity] = useState('success');
 
     function TabPanel(props) {
         const {children, value, index, ...other} = props;
@@ -64,7 +73,7 @@ const AccountProfilePage = () => {
     };
 
     const handleClickShowPassword = () => {
-        setShowResetPassword(!showResetPassword);
+        setShowNewPassword(!showNewPassword);
     };
 
     const handleClickShowConfirmPassword = () => {
@@ -75,10 +84,137 @@ const AccountProfilePage = () => {
         event.preventDefault();
     };
 
+    const handleDeleteUser = async () => {
+        try {
+            await deleteUser(originalUser.username)
+            setSnackMessage('User deleted successfully.');
+            setSeverity('success');
+            setOpenSnackbar(true)
+        } catch (error) {
+            if (error.message.includes("Fail to delete user")) {
+                setSnackMessage('Fail to delete user. Please try again later.');
+                setSeverity('error');
+            } else {
+                setSnackMessage('An unexpected error has happened. Please try again later.');
+                setSeverity('error');
+            }
+            setOpenSnackbar(true)
+        }
+    }
+
+    const handleUpdateUserPassword = async () => {
+        try {
+            let passwordRegEx = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%.*#?&])[A-Za-z\d@$!%.*#?&]{8,15}$/;
+            const validPassword = passwordRegEx.test(updatedUser.password);
+            if (validPassword) {
+                if (updatedUser.password === originalUser.password) {
+                    setSnackMessage('Please input your new password.');
+                    setSeverity('error');
+                    setOpenSnackbar(true)
+                    return;
+                }
+                if (updatedUser.password === confirmPassword) {
+                    await updateUser(originalUser.username, {password: updatedUser.password})
+                    setSnackMessage('Update new password of user successfully.');
+                    setSeverity('success');
+                } else {
+                    setSnackMessage('Passwords do not match. Please try again.');
+                    setSeverity('error');
+                }
+                setOpenSnackbar(true)
+            } else {
+                setSnackMessage('Password must be 8 to 15 characters long and contain at least one letter, one number, and one special character.');
+                setSeverity('error');
+                setOpenSnackbar(true)
+            }
+        } catch (error) {
+            if (error.message.includes("User Password update failed")) {
+                setSnackMessage('User Password update failed. Please try again later.');
+                setSeverity('error');
+            } else {
+                setSnackMessage('An unexpected error has happened. Please try again later.');
+                setSeverity('error');
+            }
+            setOpenSnackbar(true)
+        }
+    }
+
+    const handleAvatarChange = (event) => {
+        event.persist();
+        event.preventDefault();
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = async () => {
+            try {
+                moviesContext.addUserAvatar(reader.result.toString());
+                event.target.value = '';
+                await updateUser(originalUser.username, {avatar: reader.result.toString()});
+                setSnackMessage('User Avatar update successfully.');
+                setSeverity('success');
+                setOpenSnackbar(true)
+            } catch (error) {
+                moviesContext.addUserAvatar("");
+                if (error.message.includes("User Avatar update failed")) {
+                    console.log(error);
+                    setSnackMessage('User Avatar update failed. Please try again later.');
+                    setSeverity('error');
+                } else {
+                    setSnackMessage('An unexpected error has happened. Please try again later.');
+                    setSeverity('error');
+                }
+                setOpenSnackbar(true)
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const handleSnackClose = () => {
+        setOpenSnackbar(false);
+    };
+
     return (
         <>
+            <Snackbar
+                anchorOrigin={{vertical: "top", horizontal: "center"}}
+                open={openSnackbar}
+                autoHideDuration={3100}
+                onClose={handleSnackClose}
+                sx={{
+                    marginTop: '17.2vh',
+                    '& .MuiPaper-root': {
+                        borderRadius: 3,
+                        height: '45px',
+                        boxShadow: '0 5px 8px 5px rgba(255, 105, 135, .3)'
+                    }
+                }}
+            >
+                <Slide direction="down" in={openSnackbar}>
+                    <MuiAlert
+                        severity={severity}
+                        variant="filled"
+                        onClose={handleSnackClose}
+                        sx={{
+                            ...(severity === 'error' && {
+                                background: 'linear-gradient(45deg, #FF5353 35%, #FF1919 95%)',
+                            }),
+                            ...(severity === 'success' && {
+                                background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                            }),
+                            fontWeight: 'bold',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontSize: '1rem',
+                        }}
+                    >
+                        <Typography variant="h6" component="div">
+                            {snackMessage}
+                        </Typography>
+                    </MuiAlert>
+                </Slide>
+            </Snackbar>
             <div style={{...backgroundImageStyles.backgroundMainContainer, height: '91.77vh'}}></div>
-            <Grid container sx={{padding: '20px'}} >
+            <Grid container sx={{padding: '20px'}}>
                 <Grid item xs={12} sx={{mt: '-7px'}}>
                     <Header title={`My Account Profile`}/>
                 </Grid>
@@ -109,30 +245,40 @@ const AccountProfilePage = () => {
                                    height: '93.3%'
                                }}>
                             <Stack spacing={2} alignItems="center" sx={{width: '92%'}}>
-                                <Avatar
-                                    alt="Tim Cook"
-                                    src="/path/to/tim-cook.jpg"
-                                    sx={{width: 128, height: 128}}
+                                <input
+                                    accept="image/*"
+                                    style={{display: 'none'}}
+                                    id="avatar-upload"
+                                    type="file"
+                                    onChange={handleAvatarChange}
                                 />
+                                <label htmlFor="avatar-upload">
+                                    <Avatar
+                                        alt={originalUser.username}
+                                        src={userAvatar}
+                                        sx={{width: 120, height: 120, cursor: 'pointer', mt: '-8px !important'}}
+                                    />
+                                </label>
                                 <Typography variant="h5" component="h2" sx={{mt: '9px !important'}}>
                                     {originalUser.username}
                                 </Typography>
-                                <Stack direction="row" justifyContent="space-between" sx={{width: '100%',mt:'9px !important'}}>
+                                <Stack direction="row" justifyContent="space-between"
+                                       sx={{width: '100%', mt: '9px !important'}}>
                                     <Typography variant="body1" fontWeight="bold">Number of favorites</Typography>
                                     <Typography variant="body1" fontWeight="bold">
-                                        32
+                                        {moviesContext.favorites.length}
                                     </Typography>
                                 </Stack>
                                 <Stack direction="row" justifyContent="space-between" sx={{width: '100%'}}>
                                     <Typography variant="body1" fontWeight="bold">Number of watch list</Typography>
                                     <Typography variant="body1" fontWeight="bold">
-                                        26
+                                        {moviesContext.toWatchList.length}
                                     </Typography>
                                 </Stack>
                                 <Stack direction="row" justifyContent="space-between" sx={{width: '100%'}}>
                                     <Typography variant="body1" fontWeight="bold">Number of movies reviews</Typography>
                                     <Typography variant="body1" fontWeight="bold">
-                                        6
+                                        {moviesContext.myReviewedMovieIds.length}
                                     </Typography>
                                 </Stack>
                                 <Stack direction="row" justifyContent="space-between" sx={{width: '100%'}}>
@@ -141,10 +287,10 @@ const AccountProfilePage = () => {
                                         New Password
                                     </Typography>
                                     <TextField
-                                        id="resetPassword"
-                                        label="Reset Password"
+                                        id="newPassword"
+                                        label="New Password"
                                         sx={{width: '80.6%', mt: 0.4, mb: 1}}
-                                        type={showResetPassword ? 'text' : 'password'}
+                                        type={showNewPassword ? 'text' : 'password'}
                                         required
                                         onChange={(e) => {
                                             setUpdatedUser({
@@ -166,7 +312,7 @@ const AccountProfilePage = () => {
                                                         onClick={handleClickShowPassword}
                                                         onMouseDown={handleMouseDownPassword}
                                                     >
-                                                        {showResetPassword ? <Visibility/> : <VisibilityOff/>}
+                                                        {showNewPassword ? <Visibility/> : <VisibilityOff/>}
                                                     </IconButton>
                                                 </InputAdornment>
                                             ),
@@ -208,12 +354,13 @@ const AccountProfilePage = () => {
                                     />
                                 </Stack>
                                 <Grid item xs={12} sx={{width: '100%'}}>
-                                    <Button variant="contained" color="primary" fullWidth>
+                                    <Button variant="contained" color="primary" fullWidth
+                                            onClick={handleUpdateUserPassword}>
                                         Change Password
                                     </Button>
                                 </Grid>
                                 <Grid item xs={12} sx={{width: '100%'}}>
-                                    <Button variant="contained" color="error" fullWidth>
+                                    <Button variant="contained" color="error" fullWidth onClick={handleDeleteUser}>
                                         Delete Account User
                                     </Button>
                                 </Grid>
@@ -255,6 +402,9 @@ const AccountProfilePage = () => {
                                     <Tab label="Some Movies to watch" {...a11yProps(2)} sx={{
                                         fontSize: '1.1rem',
                                     }}/>
+                                    <Tab label="Some Reviewed Movies" {...a11yProps(3)} sx={{
+                                        fontSize: '1.1rem',
+                                    }}/>
                                 </Tabs>
                             </AppBar>
                             <TabPanel value={value} index={0}>
@@ -265,6 +415,9 @@ const AccountProfilePage = () => {
                             </TabPanel>
                             <TabPanel value={value} index={2}>
                                 Some Movies to watch
+                            </TabPanel>
+                            <TabPanel value={value} index={3}>
+                                Some Reviewed Movies
                             </TabPanel>
                         </Paper>
                     </Grid>

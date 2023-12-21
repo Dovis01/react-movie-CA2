@@ -5,7 +5,7 @@ import {
     addUserFavorite,
     addUserMovieSpecificReview, addUserToWatchList, deleteUserFavorite,
     deleteUserMovieSpecificReview, deleteUserToWatchList,
-    getAllReviewedMoviesByUser, getUserFavorites,
+    getAllReviewedMoviesByUser, getUser, getUserFavorites,
     getUserMovieReviews, getUserToWatchList, updateUserMovieSpecificReview
 } from "../api/user-api";
 
@@ -15,6 +15,8 @@ const MoviesContextProvider = (props) => {
     const usersContext = useContext(UsersContext);
     const [favorites, setFavorites] = useState([])
     const [myReviewedMovieIds, setMyReviewedMovieIds] = useState([])
+    const [currentUserInfoObject, setCurrentUserInfoObject] = useState(null)
+    const [userAvatar, setUserAvatar] = useState("/path/to/image");
     const [toWatchList, setToWatchList] = useState([])
     const navigate = useNavigate();
 
@@ -25,9 +27,14 @@ const MoviesContextProvider = (props) => {
                     const favoritesDoc = await getUserFavorites(usersContext.user.username);
                     const movieIds = await getAllReviewedMoviesByUser(usersContext.user.username);
                     const toWatchListDoc = await getUserToWatchList(usersContext.user.username);
+                    const currentUserInfoObject = await getUser(usersContext.user.username);
+                    if(currentUserInfoObject.avatar){
+                        setUserAvatar(currentUserInfoObject.avatar);
+                    }
                     setFavorites(favoritesDoc.favorites);
                     setMyReviewedMovieIds(movieIds);
                     setToWatchList(toWatchListDoc.toWatchList);
+                    setCurrentUserInfoObject(currentUserInfoObject);
                 } catch (err) {
                     err.message = "Unable to fetch personal data, maybe these personal data is originally null.";
                     console.log(err.message);
@@ -41,6 +48,8 @@ const MoviesContextProvider = (props) => {
         setFavorites([]);
         setMyReviewedMovieIds([]);
         setToWatchList([]);
+        setCurrentUserInfoObject(null);
+        setUserAvatar("/path/to/image")
     }
     const addToFavorites = async (movie) => {
         if (usersContext.user) {
@@ -114,6 +123,10 @@ const MoviesContextProvider = (props) => {
         await deleteUserMovieSpecificReview(username, movie.id, review._id);
     };
 
+    const addUserAvatar = (avatar) => {
+        setUserAvatar(avatar);
+    }
+
 
     return (
         <MoviesContext.Provider
@@ -121,7 +134,10 @@ const MoviesContextProvider = (props) => {
                 myReviewedMovieIds,
                 favorites,
                 toWatchList,
+                currentUserInfoObject,
+                userAvatar,
                 addToFavorites,
+                addUserAvatar,
                 removeFromFavorites,
                 removeFromWatchList,
                 addReview,
