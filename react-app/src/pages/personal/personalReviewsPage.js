@@ -11,7 +11,6 @@ const PersonalReviewsPage =  () => {
     const [currentPage, setCurrentPage] = useState(1);
     const moviesContext = useContext(MoviesContext);
     const movieIds = moviesContext.myReviewedMovieIds;
-    console.log(movieIds)
     const moviesPerPage = 40;
     const indexOfLastMovie = currentPage * moviesPerPage;
     const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;

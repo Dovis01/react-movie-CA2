@@ -21,12 +21,17 @@ const MoviesContextProvider = (props) => {
     useEffect(() => {
         const initiateAllPersonalData = async () => {
             if (usersContext.isAuthenticated && usersContext.user?.username) {
-                const favoritesDoc = await getUserFavorites(usersContext.user.username);
-                const movieIds = await getAllReviewedMoviesByUser(usersContext.user.username);
-                const toWatchListDoc = await getUserToWatchList(usersContext.user.username);
-                setFavorites(favoritesDoc.favorites);
-                setMyReviewedMovieIds(movieIds);
-                setToWatchList(toWatchListDoc.toWatchList);
+                try {
+                    const favoritesDoc = await getUserFavorites(usersContext.user.username);
+                    const movieIds = await getAllReviewedMoviesByUser(usersContext.user.username);
+                    const toWatchListDoc = await getUserToWatchList(usersContext.user.username);
+                    setFavorites(favoritesDoc.favorites);
+                    setMyReviewedMovieIds(movieIds);
+                    setToWatchList(toWatchListDoc.toWatchList);
+                } catch (err) {
+                    err.message = "Unable to fetch personal data, maybe these personal data is originally null.";
+                    console.log(err.message);
+                }
             }
         };
         initiateAllPersonalData();
