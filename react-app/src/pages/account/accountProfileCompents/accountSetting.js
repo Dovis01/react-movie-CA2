@@ -192,8 +192,7 @@ function AccountSettings() {
                                 City
                             </Typography>
                             <Select
-                                defaultValue={originalUser?.city || ''}
-                                value={originalUser?.city || ''}
+
                                 variant="outlined"
                                 onChange={(e) => {
                                     setUpdatedUser({
@@ -214,7 +213,7 @@ function AccountSettings() {
                                 Country
                             </Typography>
                             <Select
-                                value={originalUser?.country || 'china'}
+                                value={country}
                                 onChange={handleCountryChange}
                                 defaultValue={originalUser?.country || ''}
                                 variant="outlined"

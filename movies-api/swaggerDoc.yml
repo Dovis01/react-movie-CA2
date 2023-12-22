@@ -58,6 +58,18 @@ paths:
           description: ''
           headers: {}
       deprecated: false
+  /movies/tmdb/590706:
+    get:
+      tags:
+        - Movies
+      summary: http://localhost:8080/api/movies/tmdb/movies/590706
+      operationId: http://localhost:8080/api/movies/tmdb/movies/590706
+      parameters: [ ]
+      responses:
+        '200':
+          description: 'get specific movie details from tmdb successfully'
+          headers: { }
+      deprecated: false
   /movies/tmdb/590706/images:
     get:
       tags:
@@ -198,12 +210,12 @@ paths:
           description: 'register user successfully'
           headers: {}
       deprecated: false
-  /user/delete/user2:
+  /user/delete/user4:
     delete:
       tags:
         - Users
-      summary: http://localhost:8080/api/user/changes/Dovis
-      operationId: http://localhost:8080/api/user/changes/Dovis
+      summary: http://localhost:8080/api/user/changes/user4
+      operationId: http://localhost:8080/api/user/changes/user4
       parameters: []
       responses:
         '200':
@@ -640,12 +652,12 @@ paths:
       deprecated: false
       security:
         - bearer: []
-  /reviews/65820da5358ec33acf381c73/user1/movies/897087:
+  /reviews/6585ac3a63fa247a73957bca/user1/movies/897087:
     get:
       tags:
         - Reviews
-      summary: http://localhost:8080/api/reviews/65820da5358ec33acf381c73/user1/movies/897087
-      operationId: http://localhost:8080/api/reviews/65820da5358ec33acf381c73/user1/movies/897087
+      summary: http://localhost:8080/api/reviews/6585ac3a63fa247a73957bca/user1/movies/897087
+      operationId: http://localhost:8080/api/reviews/6585ac3a63fa247a73957bca/user1/movies/897087
       parameters: []
       responses:
         '200':
@@ -698,12 +710,12 @@ paths:
       deprecated: false
       security:
         - bearer: []
-  /reviews/6582f6bea58ec972820cf8ad/user1/movies/897087:
+  /reviews/6585ac3a63fa247a73957bc7/user1/movies/897087:
     put:
       tags:
         - Reviews
-      summary: http://localhost:8080/api/reviews/6582f6bea58ec972820cf8ad/user1/movies/897087
-      operationId: http://localhost:8080/api/reviews/6582f6bea58ec972820cf8ad/user1/movies/897087
+      summary: http://localhost:8080/api/reviews/6585ac3a63fa247a73957bc7/user1/movies/897087
+      operationId: http://localhost:8080/api/reviews/6585ac3a63fa247a73957bc7/user1/movies/897087
       parameters: []
       requestBody:
         description: ''
@@ -728,12 +740,12 @@ paths:
       deprecated: false
       security:
         - bearer: []
-  /reviews/65834b2cd6a71aafb9e89a74/user1/movies/897087:
+  /reviews/6585ac3a63fa247a73957bc9/user1/movies/897087:
     delete:
       tags:
         - Reviews
-      summary: http://localhost:8080/api/reviews/6582f6bea58ec972820cf8b1/user1/movies/897087
-      operationId: http://localhost:8080/api/reviews/6582f6bea58ec972820cf8b1/user1/movies/897087
+      summary: http://localhost:8080/api/reviews/6585ac3a63fa247a73957bc9/user1/movies/897087
+      operationId: http://localhost:8080/api/reviews/6585ac3a63fa247a73957bc9/user1/movies/897087
       parameters: []
       responses:
         '200':
@@ -742,12 +754,12 @@ paths:
       deprecated: false
       security:
         - bearer: []
-  /reviews/65834b2cd6a71aafb9e89a77/user4/movies/897087:
+  /reviews/6585ac3a63fa247a73957bcc/user4/movies/897087:
     delete:
       tags:
         - Reviews
-      summary: http://localhost:8080/api/reviews/65830649763441d48f5eff7c/user4/movies/897087
-      operationId: http://localhost:8080/api/reviews/65830649763441d48f5eff7c/user4/movies/897087
+      summary: http://localhost:8080/api/reviews/6585ac3a63fa247a73957bcc/user4/movies/897087
+      operationId: http://localhost:8080/api/reviews/6585ac3a63fa247a73957bcc/user4/movies/897087
       parameters: []
       responses:
         '200':
